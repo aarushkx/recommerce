@@ -26,9 +26,6 @@
     "build": "npm install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "devDependencies": {
-    "nodemon": "^3.1.13"
-  },
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.9.0",
@@ -39,5 +36,8 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.2.1",
     "multer": "^2.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.13"
   }
 }
