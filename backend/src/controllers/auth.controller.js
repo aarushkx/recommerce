@@ -10,11 +10,12 @@ import {
     PHONE_NUMBER_LEN,
     MIN_PASSWORD_LEN,
 } from "../lib/config.js";
+import fs from "fs";
 
 export const register = async (req, res) => {
+    const avatarLocalPath = req.file?.path;
     try {
         let { name, email, phoneNumber, password, location } = req.body;
-        const avatarLocalPath = req.file?.path;
 
         name = name?.trim();
         email = email?.trim().toLowerCase();
@@ -139,6 +140,8 @@ export const register = async (req, res) => {
     } catch (error) {
         console.log("ERROR :: CONTROLLER :: register ::", error);
         return res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        if (avatarLocalPath) fs.unlinkSync(avatarLocalPath);
     }
 };
 
