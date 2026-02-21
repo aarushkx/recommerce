@@ -1,6 +1,6 @@
 import Product from "../models/product.model.js";
 import User from "../models/user.model.js";
-import { uploadOnCloudinary } from "../lib/cloudinary.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../lib/cloudinary.js";
 import { APP_NAME } from "../lib/config.js";
 import {
     MIN_TITLE_LEN,
@@ -92,14 +92,28 @@ export const createProduct = async (req, res) => {
         tags = tagsArr;
 
         // Location
-        if (!location)
-            return res.status(400).json({ message: "Location is required" });
+        let user = await User.findById(req.user._id);
+        if (!user) return res.status(404).json({ message: "User not found" });
 
         let parsedLocation;
-        try {
-            parsedLocation = JSON.parse(location);
-        } catch {
-            return res.status(400).json({ message: "Invalid location format" });
+        if (location) {
+            try {
+                parsedLocation = JSON.parse(location);
+            } catch {
+                return res
+                    .status(400)
+                    .json({ message: "Invalid location format" });
+            }
+        } else {
+            // Fallback to user's location
+            if (!user.location) {
+                return res.status(400).json({
+                    message:
+                        "Location not provided and user has no saved location",
+                });
+            }
+
+            parsedLocation = user.location;
         }
 
         // Images
@@ -138,7 +152,7 @@ export const createProduct = async (req, res) => {
         });
 
         // Push product into user's products
-        const user = await User.findByIdAndUpdate(req.user._id, {
+        user = await User.findByIdAndUpdate(req.user._id, {
             $push: { products: product._id },
         });
         if (!user) {
@@ -339,7 +353,7 @@ export const deleteProduct = async (req, res) => {
             for (const image of product.images) {
                 if (image.public_id) {
                     if (image.public_id)
-                        await deleteFromCloudinary(image.public_id);
+                        await deleteFromCloudinary(image);
                 }
             }
         }
