@@ -23,7 +23,10 @@ const userSchema = new Schema(
             required: true,
         },
         avatar: imageSchema,
-        location: locationSchema,
+        location: {
+            type: locationSchema,
+            required: true,
+        },
         favorites: [
             {
                 type: mongoose.Schema.Types.ObjectId,
