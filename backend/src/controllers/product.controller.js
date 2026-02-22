@@ -177,7 +177,7 @@ export const updateProduct = async (req, res) => {
     try {
         const { productId } = req.params;
 
-        // Field validation
+        // Validate product ID
         if (!mongoose.Types.ObjectId.isValid(productId))
             return res.status(400).json({ message: "Invalid product ID" });
 
@@ -332,7 +332,7 @@ export const deleteProduct = async (req, res) => {
     try {
         const { productId } = req.params;
 
-        // Field validation
+        // Validate product ID
         if (!mongoose.Types.ObjectId.isValid(productId))
             return res.status(400).json({ message: "Invalid product ID" });
 
@@ -343,17 +343,16 @@ export const deleteProduct = async (req, res) => {
 
         // Authorization check
         if (product.seller.toString() !== req.user._id.toString()) {
-            return res
-                .status(403)
-                .json({ message: "Not authorized to delete this product" });
+            return res.status(403).json({
+                message: "You are not authorized to delete this product",
+            });
         }
 
         // Delete images from Cloudinary
         if (product.images && product.images.length > 0) {
             for (const image of product.images) {
                 if (image.public_id) {
-                    if (image.public_id)
-                        await deleteFromCloudinary(image);
+                    if (image.public_id) await deleteFromCloudinary(image);
                 }
             }
         }
@@ -385,7 +384,7 @@ export const getProduct = async (req, res) => {
     try {
         const { productId } = req.params;
 
-        // Field validation
+        // Validate product ID
         if (!mongoose.Types.ObjectId.isValid(productId))
             return res.status(400).json({ message: "Invalid product ID" });
 
