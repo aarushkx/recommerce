@@ -8,6 +8,8 @@ import {
 	MAX_NAME_LEN,
 	MIN_PASSWORD_LEN,
 } from "../lib/config.js";
+import { APP_NAME } from "../lib/config.js";
+import fs from "fs";
 
 export const getUser = async (req, res) => {
 	try {
@@ -27,7 +29,15 @@ export const updateProfile = async (req, res) => {
 	const avatarLocalPath = req.file?.path;
 	try {
 		const userId = req.user._id;
-		let { name, email, phoneNumber, password, location } = req.body;
+		let {
+			name,
+			email,
+			phoneNumber,
+			oldPassword,
+			newPassword,
+			confirmPassword,
+			location,
+		} = req.body;
 
 		name = name?.trim();
 		email = email?.trim().toLowerCase();
@@ -69,11 +79,19 @@ export const updateProfile = async (req, res) => {
 			user.phoneNumber = phoneNumber;
 		}
 
-		if (password) {
-			if (password.length < MIN_PASSWORD_LEN)
+		if (newPassword) {
+			if (newPassword.length < MIN_PASSWORD_LEN)
 				return res.status(400).json({
 					message: `Password must be at least ${MIN_PASSWORD_LEN} characters`,
 				});
+
+			const isSame = await bcrypt.compare(oldPassword, user.password);
+
+			if (!isSame)
+				return res.status(400).json({ message: "Incorrect password" });
+
+			if (confirmPassword !== newPassword)
+				return res.status(400).json({ message: "Password mismatch" });
 
 			const salt = await bcrypt.genSalt(10);
 			user.password = await bcrypt.hash(password, salt);
@@ -131,6 +149,8 @@ export const updateProfile = async (req, res) => {
 		return res.status(500).json({
 			message: "Internal Server Error",
 		});
+	} finally {
+		if (avatarLocalPath) fs.unlinkSync(avatarLocalPath);
 	}
 };
 
@@ -143,7 +163,11 @@ export const deleteAccount = async (req, res) => {
 
 		if (user.avatar.public_id) await deleteFromCloudinary(user.avatar);
 		await user.deleteOne();
-		res.clearCookie("jwt", { httpOnly: true, sameSite: "strict" });
+
+		res.clearCookie("jwt", {
+			httpOnly: true, // TODO: May need to update the following fields for deployment
+			sameSite: "strict",
+		});
 
 		return res.status(200).json({ message: "Account Deleted Succesfully" });
 	} catch (error) {

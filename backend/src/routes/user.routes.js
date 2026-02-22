@@ -10,10 +10,10 @@ import { upload } from "../middlewares/multer.middleware.js";
 const router = express.Router();
 
 //GET
-router.get("/:id", protect, getUser);
+router.get("/:userId", protect, getUser);
 
-//PUT
-router.put("/update-profile", protect, upload.single("avatar"), updateProfile);
+//PATCH
+router.patch("/update-profile", protect, upload.single("avatar"), updateProfile);
 
 //DELETE
 router.delete("/delete-account", protect, deleteAccount);
