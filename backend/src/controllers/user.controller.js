@@ -10,6 +10,9 @@ import {
 } from "../lib/config.js";
 import { APP_NAME } from "../lib/config.js";
 import fs from "fs";
+import Booking from "../models/booking.model.js";
+import Product from "../models/product.model.js";
+import Review from "../models/review.model.js";
 
 export const getUser = async (req, res) => {
 	try {
@@ -161,12 +164,41 @@ export const deleteAccount = async (req, res) => {
 
 		if (!user) return res.status(404).json({ message: "User not found" });
 
-	    // Delete avatar from cloudinary if exists
-		if (user.avatar.public_id) await deleteFromCloudinary(user.avatar);
+		// Delete avatar from cloudinary if exists
+		if (user.avatar?.public_id) await deleteFromCloudinary(user.avatar);
+
+		//Delete all bookings where user is buyer or seller
+		await Booking.deleteMany({
+			$or: [{ buyer: userId }, { seller: userId }],
+		});
+
+		// If user is a seller, delete all their products
+		if (user.isSeller) {
+			const products = await Product.find({ seller: userId });
+			for (const product of products) {
+				if (product.images && product.images.length > 0) {
+					for (const image of product.images) {
+						if (image.public_id) await deleteFromCloudinary(image);
+					}
+					await User.updateMany(
+						{ favorites: product._id },
+						{ $pull: { favorites: product._id } },
+					);
+				}
+				await Product.deleteMany({ seller: user._id });
+			}
+		}
+
+		//Delete reviews of user
+		await Review.deleteMany({
+			$or: [{ reviewer: userId }, { seller: userId }],
+		});
+
 		await user.deleteOne();
 
 		res.clearCookie("jwt", {
-			httpOnly: true, // TODO: May need to update the following fields for deployment
+			httpOnly: true,
+			// TODO: May need to update the following fields for deployment
 			sameSite: "strict",
 		});
 
