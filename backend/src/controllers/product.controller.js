@@ -11,7 +11,6 @@ import {
     MAX_CATEGORY_LENGTH,
     VALID_STATUS,
 } from "../lib/config.js";
-import fs from "fs";
 import mongoose from "mongoose";
 
 export const createProduct = async (req, res) => {
@@ -154,6 +153,7 @@ export const createProduct = async (req, res) => {
         // Push product into user's products
         user = await User.findByIdAndUpdate(req.user._id, {
             $push: { products: product._id },
+            $set: { isSeller: true },
         });
         if (!user) {
             await Product.findByIdAndDelete(product._id);
@@ -164,16 +164,11 @@ export const createProduct = async (req, res) => {
     } catch (error) {
         console.log("ERROR :: CONTROLLER :: createProduct ::", error.message);
         return res.status(500).json({ message: "Internal Server Error" });
-    } finally {
-        // Cleanup locally uploaded files
-        imageFiles.forEach((file) => {
-            if (file.path) fs.unlinkSync(file.path);
-        });
     }
 };
 
 export const updateProduct = async (req, res) => {
-    const imageFiles = req.files || [];
+    // const imageFiles = req.files || [];
     try {
         const { productId } = req.params;
 
@@ -320,11 +315,6 @@ export const updateProduct = async (req, res) => {
     } catch (error) {
         console.log("ERROR :: CONTROLLER :: updateProduct ::", error.message);
         return res.status(500).json({ message: "Internal Server Error" });
-    } finally {
-        // Cleanup locally uploaded files
-        imageFiles.forEach((file) => {
-            if (file.path) fs.unlinkSync(file.path);
-        });
     }
 };
 
@@ -357,16 +347,25 @@ export const deleteProduct = async (req, res) => {
             }
         }
 
-        // Remove product reference from seller's listings and all users' favorites
-        await Promise.all([
-            User.findByIdAndUpdate(product.seller, {
-                $pull: { products: productId },
-            }),
-            User.updateMany(
-                { favorites: productId },
-                { $pull: { favorites: productId } },
-            ),
-        ]);
+        // Remove product from seller's products
+        const updatedUser = await User.findByIdAndUpdate(
+            product.seller,
+            { $pull: { products: productId } },
+            { new: true },
+        );
+
+        // Remove product from favorites
+        await User.updateMany(
+            { favorites: productId },
+            { $pull: { favorites: productId } },
+        );
+
+        // If seller has no more products then they are not a seller
+        if (updatedUser && updatedUser.products.length === 0) {
+            await User.findByIdAndUpdate(product.seller, {
+                $set: { isSeller: false },
+            });
+        }
 
         // Delete the product from DB
         await product.deleteOne();

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Booking from "../models/booking.model.js";
 import Product from "../models/product.model.js";
+import User from "../models/user.model.js";
 
 export const createBooking = async (req, res) => {
     // We use Atomic Transactions to carry out booking
