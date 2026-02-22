@@ -143,7 +143,8 @@ export const register = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     } finally {
         // Cleanup locally uploaded avatar file
-        if (avatarLocalPath) fs.unlinkSync(avatarLocalPath);
+        if (avatarLocalPath && fs.existsSync(avatarLocalPath))
+            fs.unlinkSync(avatarLocalPath);
     }
 };
 
