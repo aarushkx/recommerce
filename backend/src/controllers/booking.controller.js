@@ -212,6 +212,7 @@ export const confirmBooking = async (req, res) => {
 
         return res.status(200).json(booking);
     } catch (error) {
+        console.log("ERROR :: CONTROLLER :: confirmBooking ::", error.message);
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
