@@ -17,6 +17,7 @@ export const register = async (req, res) => {
     try {
         let { name, email, phoneNumber, password, location } = req.body;
 
+        // Sanitization
         name = name?.trim();
         email = email?.trim().toLowerCase();
         phoneNumber = phoneNumber?.trim();
@@ -141,6 +142,7 @@ export const register = async (req, res) => {
         console.log("ERROR :: CONTROLLER :: register ::", error);
         return res.status(500).json({ message: "Internal Server Error" });
     } finally {
+        // Cleanup locally uploaded avatar file
         if (avatarLocalPath) fs.unlinkSync(avatarLocalPath);
     }
 };
