@@ -161,6 +161,7 @@ export const deleteAccount = async (req, res) => {
 
 		if (!user) return res.status(404).json({ message: "User not found" });
 
+	    // Delete avatar from cloudinary if exists
 		if (user.avatar.public_id) await deleteFromCloudinary(user.avatar);
 		await user.deleteOne();
 
