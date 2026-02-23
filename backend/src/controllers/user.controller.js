@@ -97,7 +97,7 @@ export const updateProfile = async (req, res) => {
 				return res.status(400).json({ message: "Password mismatch" });
 
 			const salt = await bcrypt.genSalt(10);
-			user.password = await bcrypt.hash(password, salt);
+			user.password = await bcrypt.hash(newPassword, salt);
 		}
 
 		if (location) {
@@ -153,7 +153,9 @@ export const updateProfile = async (req, res) => {
 			message: "Internal Server Error",
 		});
 	} finally {
-		if (avatarLocalPath) fs.unlinkSync(avatarLocalPath);
+		if (avatarLocalPath && fs.existsSync(avatarLocalPath)) {
+			fs.unlinkSync(avatarLocalPath);
+		}
 	}
 };
 
