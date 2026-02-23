@@ -1,4 +1,8 @@
 import User from "../models/user.model.js";
+import Booking from "../models/booking.model.js";
+import Product from "../models/product.model.js";
+import Review from "../models/review.model.js";
+import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import { uploadOnCloudinary, deleteFromCloudinary } from "../lib/cloudinary.js";
 import {
@@ -10,9 +14,6 @@ import {
 } from "../lib/config.js";
 import { APP_NAME } from "../lib/config.js";
 import fs from "fs";
-import Booking from "../models/booking.model.js";
-import Product from "../models/product.model.js";
-import Review from "../models/review.model.js";
 
 export const getUser = async (req, res) => {
     try {
@@ -174,23 +175,32 @@ export const updateProfile = async (req, res) => {
 };
 
 export const deleteAccount = async (req, res) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
     try {
         const userId = req.user._id;
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).session(session);
 
-        if (!user) return res.status(404).json({ message: "User not found" });
+        if (!user) {
+            await session.abortTransaction();
+            return res.status(404).json({ message: "User not found" });
+        }
 
         // Delete avatar from Cloudinary if exists
         if (user.avatar?.public_id) await deleteFromCloudinary(user.avatar);
 
         // Delete all bookings where user is buyer or seller
-        await Booking.deleteMany({
-            $or: [{ buyer: userId }, { seller: userId }],
-        });
+        await Booking.deleteMany(
+            { $or: [{ buyer: userId }, { seller: userId }] },
+            { session },
+        );
 
         // If user is a seller, delete all their products
-        if (user.isSeller || user.products.length > 0) {
-            const products = await Product.find({ seller: userId });
+        if (user.isSeller || user.products?.length > 0) {
+            const products = await Product.find({ seller: userId }).session(
+                session,
+            );
             const productIds = products.map((p) => p._id);
 
             // Delete product images
@@ -207,23 +217,29 @@ export const deleteAccount = async (req, res) => {
                 await User.updateMany(
                     { favorites: { $in: productIds } },
                     { $pull: { favorites: { $in: productIds } } },
+                    { session },
                 );
             }
 
             // Delete all products
-            await Product.deleteMany({ seller: user._id });
+            await Product.deleteMany({ seller: userId }, { session });
         }
 
         // Delete reviews of user
-        await Review.deleteMany({
-            $or: [{ reviewer: userId }, { seller: userId }],
-        });
+        await Review.deleteMany(
+            { $or: [{ reviewer: userId }, { seller: userId }] },
+            { session },
+        );
 
-        await user.deleteOne();
+        await user.deleteOne({ session });
+
+        // Commit transaction
+        await session.commitTransaction();
+        session.endSession();
 
         res.clearCookie("jwt", {
             httpOnly: true,
-            // TODO: May need to update the following fields for deployment
+            // TODO: May need to update the following field for deployment
             sameSite: "strict",
         });
 
