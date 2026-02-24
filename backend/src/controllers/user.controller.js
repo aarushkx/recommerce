@@ -15,6 +15,7 @@ import {
 import { APP_NAME } from "../lib/config.js";
 import fs from "fs";
 
+// USER PROFILE
 export const getUser = async (req, res) => {
     try {
         const user = await User.findById(req.user._id).select("-password");
@@ -72,8 +73,14 @@ export const updateProfile = async (req, res) => {
             if (!emailRegex.test(email))
                 return res.status(400).json({ message: "Invalid email" });
 
-            // "email" field is already unique in User schema,
-            // hence we are not checking for existing email here
+            const existingEmail = await User.findOne({
+                email,
+                _id: { $ne: userId },
+            });
+            if (existingEmail)
+                return res
+                    .status(400)
+                    .json({ message: "Email already in use" });
 
             user.email = email;
         }
@@ -85,8 +92,14 @@ export const updateProfile = async (req, res) => {
                     message: `Invalid phone number. Should be ${PHONE_NUMBER_LEN} digits`,
                 });
 
-            // "phoneNumber" field is already unique in User schema,
-            // hence we are not checking for existing phoneNumber here
+            const existingPhoneNumber = await User.findOne({
+                phoneNumber,
+                _id: { $ne: userId },
+            });
+            if (existingPhoneNumber)
+                return res
+                    .status(400)
+                    .json({ message: "Phone number already in use" });
 
             user.phoneNumber = phoneNumber;
         }
@@ -175,57 +188,53 @@ export const updateProfile = async (req, res) => {
 };
 
 export const deleteAccount = async (req, res) => {
+    // We use MongoDB transaction to ensure atomic deletion of user data
+    // Such that all DB changes succeed or rollback together
+    // Cloudinary assets are deleted only after commit is successful
     const session = await mongoose.startSession();
-    session.startTransaction();
-
     try {
+        session.startTransaction();
+
         const userId = req.user._id;
         const user = await User.findById(userId).session(session);
-
         if (!user) {
             await session.abortTransaction();
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Delete avatar from Cloudinary if exists
-        if (user.avatar?.public_id) await deleteFromCloudinary(user.avatar);
+        // Collect assets before deletion
+        const avatarToDelete = user.avatar;
+        const sellerProducts = await Product.find({ seller: userId }).session(
+            session,
+        );
+        const productIds = sellerProducts.map((p) => p._id);
+        const productImagesToDelete = [];
+        for (const product of sellerProducts) {
+            for (const image of product.images || []) {
+                productImagesToDelete.push(image);
+            }
+        }
 
+        // DB operations
         // Delete all bookings where user is buyer or seller
         await Booking.deleteMany(
             { $or: [{ buyer: userId }, { seller: userId }] },
             { session },
         );
 
-        // If user is a seller, delete all their products
-        if (user.isSeller || user.products?.length > 0) {
-            const products = await Product.find({ seller: userId }).session(
-                session,
-            );
-            const productIds = products.map((p) => p._id);
-
-            // Delete product images
-            for (const product of products) {
-                if (product.images && product.images.length > 0) {
-                    for (const image of product.images) {
-                        if (image.public_id) await deleteFromCloudinary(image);
-                    }
-                }
-            }
-
+        if (productIds.length > 0) {
             // Remove from favorites
-            if (productIds.length > 0) {
-                await User.updateMany(
-                    { favorites: { $in: productIds } },
-                    { $pull: { favorites: { $in: productIds } } },
-                    { session },
-                );
-            }
+            await User.updateMany(
+                { favorites: { $in: productIds } },
+                { $pull: { favorites: { $in: productIds } } },
+                { session },
+            );
 
             // Delete all products
             await Product.deleteMany({ seller: userId }, { session });
         }
 
-        // Delete reviews of user
+        // Delete all reviews of user
         await Review.deleteMany(
             { $or: [{ reviewer: userId }, { seller: userId }] },
             { session },
@@ -235,8 +244,16 @@ export const deleteAccount = async (req, res) => {
 
         // Commit transaction
         await session.commitTransaction();
-        session.endSession();
 
+        // Delete from Cloudinary only after transaction has been committed
+        if (avatarToDelete?.public_id)
+            await deleteFromCloudinary(avatarToDelete);
+
+        for (const image of productImagesToDelete) {
+            if (image.public_id) await deleteFromCloudinary(image);
+        }
+
+        // Clear cookie
         res.clearCookie("jwt", {
             httpOnly: true,
             // TODO: May need to update the following field for deployment
@@ -245,7 +262,141 @@ export const deleteAccount = async (req, res) => {
 
         return res.status(200).json({ message: "Account deleted succesfully" });
     } catch (error) {
+        await session.abortTransaction();
         console.log("ERROR :: CONTROLLER :: deleteAccount ::", error);
+        return res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        session.endSession();
+    }
+};
+
+// USER ACTIVITY
+export const getUserProducts = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        // Validate user ID
+        if (!mongoose.Types.ObjectId.isValid(userId))
+            return res.status(400).json({ message: "Invalid user ID" });
+
+        // Check if user exists
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        // Fetch all products listed by user
+        const products = await Product.find({ seller: userId })
+            .sort({ createdAt: -1 })
+            .lean();
+
+        return res.status(200).json(products);
+    } catch (error) {
+        console.log("ERROR :: CONTROLLER :: getUserProducts ::", error.message);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+export const getUserBookings = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        // Validate user ID
+        if (!mongoose.Types.ObjectId.isValid(userId))
+            return res.status(400).json({ message: "Invalid user ID" });
+
+        // Check if user exists
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        // Authorization check
+        if (req.user._id.toString() !== userId)
+            return res
+                .status(403)
+                .json({ message: "You are not authorized to view this data" });
+
+        // Fetch all the bookings where user is buyer
+        const bookings = await Booking.find({ buyer: userId })
+            .populate({
+                path: "product",
+                select: "title price images status category condition",
+            })
+            .populate({
+                path: "seller",
+                select: "name email phoneNumber avatar rating",
+            })
+            .sort({ createdAt: -1 })
+            .lean();
+
+        return res.status(200).json(bookings);
+    } catch (error) {
+        console.log("ERROR :: CONTROLLER :: getUserBookings ::", error.message);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+export const getUserSales = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        // Validate user ID
+        if (!mongoose.Types.ObjectId.isValid(userId))
+            return res.status(400).json({ message: "Invalid user ID" });
+
+        // Check if user exists
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        // Authorization check
+        if (req.user._id.toString() !== userId)
+            return res
+                .status(403)
+                .json({ message: "You are not authorized to view this data" });
+
+        // Fetch all the bookings where user is seller
+        const sales = await Booking.find({ seller: userId })
+            .populate({
+                path: "product",
+                select: "title price images status category condition",
+            })
+            .populate({
+                path: "buyer",
+                select: "name email phoneNumber avatar rating",
+            })
+            .sort({ createdAt: -1 })
+            .lean();
+
+        return res.status(200).json(sales);
+    } catch (error) {
+        console.log("ERROR :: CONTROLLER :: getUserSales ::", error.message);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
+
+export const getReviewsAboutUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        // Validate user ID
+        if (!mongoose.Types.ObjectId.isValid(userId))
+            return res.status(400).json({ message: "Invalid user ID" });
+
+        // Check if user exists
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const reviews = await Review.find({ seller: userId })
+            .sort({ createdAt: -1 })
+            .populate({
+                path: "reviewer",
+                select: "name email avatar",
+            })
+            .lean();
+
+        return res.status(200).json(reviews);
+    } catch (error) {
+        console.log(
+            "ERROR :: CONTROLLER :: getReviewsAboutUser ::",
+            error.message,
+        );
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
