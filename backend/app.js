@@ -10,7 +10,6 @@ import productRoutes from "./src/routes/product.routes.js";
 import bookingRoutes from "./src/routes/booking.routes.js";
 import aiRoutes from "./src/routes/ai.routes.js";
 
-
 const app = express();
 
 app.use(
@@ -32,7 +31,5 @@ app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/bookings", bookingRoutes);
 app.use("/api/v1/ai", aiRoutes);
-
-
 
 export default app;
