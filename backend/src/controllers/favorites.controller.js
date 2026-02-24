@@ -46,3 +46,22 @@ export const addToFavorites = async (req, res) => {
 	}
 };
 
+export const removeFromFavorites = async (req, res) => {
+	try {
+		const userId = req.user._id;
+        const productId = req.params;
+
+        if(!userId) return res.status(400).json({message:"User not found"});
+        
+
+
+
+
+	} catch (error) {
+		console.log(
+			"ERROR :: CONTROLLER :: removeFromFavorites ::",
+			error.message,
+		);
+		return res.status(500).json({ message: "Internal Server Error" });
+	}
+};
