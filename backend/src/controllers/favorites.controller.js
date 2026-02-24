@@ -1,5 +1,5 @@
-import User from "../models/user.model";
-import Product from "../models/product.model";
+import User from "../models/user.model.js";
+import Product from "../models/product.model.js";
 import mongoose from "mongoose";
 
 export const addToFavorites = async (req, res) => {
@@ -32,10 +32,9 @@ export const addToFavorites = async (req, res) => {
 			});
 
 		//Push product in user's favorites
-		const user = await User.findByIdAndUpdate(userId, {
+		await User.findByIdAndUpdate(userId, {
 			$addToSet: { favorites: productId },
 		});
-		if (!user) return res.status(404).json({ message: "User not found" });
 
 		return res
 			.status(200)
@@ -49,19 +48,64 @@ export const addToFavorites = async (req, res) => {
 export const removeFromFavorites = async (req, res) => {
 	try {
 		const userId = req.user._id;
-        const productId = req.params;
+		const { productId } = req.params;
 
-        if(!userId) return res.status(400).json({message:"User not found"});
-        
+		// Validate product ID
+		if (!mongoose.Types.ObjectId.isValid(productId))
+			return res.status(400).json({ message: "Invalid product ID" });
 
+		//Check if product exists
+		const product = await Product.findById(productId);
+		if (!product)
+			return res.status(404).json({ message: "Product not found" });
 
+		// Remove product from favorites
+		const updatedUser = await User.findByIdAndUpdate(
+			userId,
+			{ $pull: { favorites: productId } },
+			{ new: true },
+		);
 
+		if (!updatedUser)
+			return res.status(404).json({ message: "User not found" });
 
+		return res.status(200).json({
+			message: "Product removed from favorites",
+		});
 	} catch (error) {
 		console.log(
 			"ERROR :: CONTROLLER :: removeFromFavorites ::",
 			error.message,
 		);
+		return res.status(500).json({ message: "Internal Server Error" });
+	}
+};
+
+export const getAllFavorites = async (req, res) => {
+	try {
+		const userId = req.user._id;
+		const user = await User.findById(userId)
+			.select("favorites -_id")
+			.populate(
+				"favorites",
+				"title images price status category condition ",
+			)
+			.lean();
+
+		//Check if user exists
+		if (!user) return res.status(404).json({ message: "User not found" });
+
+		if (user.favorites.length === 0)
+			return res.status(200).json({
+				count: 0,
+				favorites: [],
+				message: "No favorites to show",
+			});
+		return res
+			.status(200)
+			.json({ count: user.favorites.length, favorites: user.favorites });
+	} catch (error) {
+		console.log("ERROR :: CONTROLLER :: getAllFavorites ::", error.message);
 		return res.status(500).json({ message: "Internal Server Error" });
 	}
 };
