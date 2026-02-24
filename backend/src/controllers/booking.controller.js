@@ -8,9 +8,9 @@ export const createBooking = async (req, res) => {
     // For this, we create a mongoose session (transaction) to ensure that if creating the booking fails,
     // the product status isn't stuck as "booked"
     const session = await mongoose.startSession();
-    session.startTransaction();
-
     try {
+        session.startTransaction();
+
         const { productId } = req.params;
         const buyerId = req.user._id;
 
@@ -71,15 +71,14 @@ export const createBooking = async (req, res) => {
 
         // Commit the transaction
         await session.commitTransaction();
-        session.endSession();
 
         return res.status(201).json(newBooking);
     } catch (error) {
         await session.abortTransaction();
-        session.endSession();
-
         console.log("ERROR :: CONTROLLER :: createBooking ::", error.message);
         return res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        session.endSession();
     }
 };
 
