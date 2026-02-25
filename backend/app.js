@@ -9,6 +9,7 @@ import userRoutes from "./src/routes/user.routes.js";
 import productRoutes from "./src/routes/product.routes.js";
 import bookingRoutes from "./src/routes/booking.routes.js";
 import aiRoutes from "./src/routes/ai.routes.js";
+import adminRoutes from "./src/routes/admin.routes.js";
 
 const app = express();
 
@@ -31,5 +32,6 @@ app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/bookings", bookingRoutes);
 app.use("/api/v1/ai", aiRoutes);
+app.use("/api/v1/admin", adminRoutes);
 
 export default app;

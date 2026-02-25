@@ -1,407 +1,411 @@
 import Product from "../models/product.model.js";
 import User from "../models/user.model.js";
+import Booking from "../models/booking.model.js";
 import { uploadOnCloudinary, deleteFromCloudinary } from "../lib/cloudinary.js";
 import { APP_NAME } from "../lib/config.js";
 import {
-	MIN_TITLE_LEN,
-	MAX_TITLE_LEN,
-	MIN_DESCRIPTION_LEN,
-	MAX_DESCRIPTION_LEN,
-	VALID_CONDITIONS,
-	MAX_CATEGORY_LENGTH,
-	VALID_STATUS,
+    MIN_TITLE_LEN,
+    MAX_TITLE_LEN,
+    MIN_DESCRIPTION_LEN,
+    MAX_DESCRIPTION_LEN,
+    VALID_CONDITIONS,
+    MAX_CATEGORY_LENGTH,
+    VALID_STATUS,
 } from "../lib/config.js";
 import mongoose from "mongoose";
 import fs from "fs";
 
 export const createProduct = async (req, res) => {
-	const imageFiles = req.files || [];
-	try {
-		let { title, description, price, category, tags, condition, location } =
-			req.body;
+    const imageFiles = req.files || [];
+    try {
+        let { title, description, price, category, tags, condition, location } =
+            req.body;
 
-		// Sanitization
-		title = title?.trim();
-		description = description?.trim();
-		category = category?.trim();
-		tags = tags?.trim();
-		condition = condition?.trim();
+        // Sanitization
+        title = title?.trim();
+        description = description?.trim();
+        category = category?.trim();
+        tags = tags?.trim();
+        condition = condition?.trim();
 
-		// Field validation
-		// Title
-		if (!title)
-			return res.status(400).json({ message: "Title is required" });
+        // Field validation
+        // Title
+        if (!title)
+            return res.status(400).json({ message: "Title is required" });
 
-		if (title.length < MIN_TITLE_LEN || title.length > MAX_TITLE_LEN)
-			return res.status(400).json({
-				message: `Title must be between ${MIN_TITLE_LEN} and ${MAX_TITLE_LEN} characters`,
-			});
+        if (title.length < MIN_TITLE_LEN || title.length > MAX_TITLE_LEN)
+            return res.status(400).json({
+                message: `Title must be between ${MIN_TITLE_LEN} and ${MAX_TITLE_LEN} characters`,
+            });
 
-		// Description
-		if (!description)
-			return res.status(400).json({ message: "Description is required" });
+        // Description
+        if (!description)
+            return res.status(400).json({ message: "Description is required" });
 
-		if (
-			description.length < MIN_DESCRIPTION_LEN ||
-			description.length > MAX_DESCRIPTION_LEN
-		)
-			return res.status(400).json({
-				message: `Description must be between ${MIN_DESCRIPTION_LEN} and ${MAX_DESCRIPTION_LEN} characters`,
-			});
+        if (
+            description.length < MIN_DESCRIPTION_LEN ||
+            description.length > MAX_DESCRIPTION_LEN
+        )
+            return res.status(400).json({
+                message: `Description must be between ${MIN_DESCRIPTION_LEN} and ${MAX_DESCRIPTION_LEN} characters`,
+            });
 
-		// Price
-		if (price === undefined || price === null) {
-			return res.status(400).json({ message: "Price is required" });
-		}
+        // Price
+        if (price === undefined || price === null) {
+            return res.status(400).json({ message: "Price is required" });
+        }
 
-		const numericPrice = Number(price);
-		if (price === "" || isNaN(numericPrice))
-			return res.status(400).json({ message: "Invalid price" });
+        const numericPrice = Number(price);
+        if (price === "" || isNaN(numericPrice))
+            return res.status(400).json({ message: "Invalid price" });
 
-		if (numericPrice < 0)
-			return res
-				.status(400)
-				.json({ message: "Price must be a non-negative number" });
+        if (numericPrice < 0)
+            return res
+                .status(400)
+                .json({ message: "Price must be a non-negative number" });
 
-		// Category
-		if (!category)
-			return res.status(400).json({ message: "Category is required" });
+        // Category
+        if (!category)
+            return res.status(400).json({ message: "Category is required" });
 
-		if (category.length > MAX_CATEGORY_LENGTH)
-			return res.status(400).json({
-				message: `Category cannot exceed ${MAX_CATEGORY_LENGTH} characters`,
-			});
+        if (category.length > MAX_CATEGORY_LENGTH)
+            return res.status(400).json({
+                message: `Category cannot exceed ${MAX_CATEGORY_LENGTH} characters`,
+            });
 
-		// Condition
-		if (!condition)
-			return res.status(400).json({ message: "Condition is required" });
+        // Condition
+        if (!condition)
+            return res.status(400).json({ message: "Condition is required" });
 
-		if (!VALID_CONDITIONS.includes(condition))
-			return res.status(400).json({
-				message: `Invalid condition. Allowed values are: ${VALID_CONDITIONS.join(", ")}`,
-			});
+        if (!VALID_CONDITIONS.includes(condition))
+            return res.status(400).json({
+                message: `Invalid condition. Allowed values are: ${VALID_CONDITIONS.join(", ")}`,
+            });
 
-		// Tags
-		const tagsArr =
-			typeof tags === "string"
-				? tags
-						.split(/\s+/)
-						.filter((t) => t.startsWith("#"))
-						.map((t) => t.slice(1))
-				: [];
-		tags = tagsArr;
+        // Tags
+        const tagsArr =
+            typeof tags === "string"
+                ? tags
+                      .split(/\s+/)
+                      .filter((t) => t.startsWith("#"))
+                      .map((t) => t.slice(1))
+                : [];
+        tags = tagsArr;
 
-		// Location
-		let user = await User.findById(req.user._id);
-		if (!user) return res.status(404).json({ message: "User not found" });
+        // Location
+        let user = await User.findById(req.user._id);
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-		let parsedLocation;
-		if (location) {
-			try {
-				parsedLocation = JSON.parse(location);
-			} catch {
-				return res
-					.status(400)
-					.json({ message: "Invalid location format" });
-			}
-		} else {
-			// Fallback to user's location
-			if (!user.location) {
-				return res.status(400).json({
-					message:
-						"Location not provided and user has no saved location",
-				});
-			}
+        let parsedLocation;
+        if (location) {
+            try {
+                parsedLocation = JSON.parse(location);
+            } catch {
+                return res
+                    .status(400)
+                    .json({ message: "Invalid location format" });
+            }
+        } else {
+            // Fallback to user's location
+            if (!user.location) {
+                return res.status(400).json({
+                    message:
+                        "Location not provided and user has no saved location",
+                });
+            }
 
-			parsedLocation = user.location;
-		}
+            parsedLocation = user.location;
+        }
 
-		// Images
-		if (imageFiles.length === 0)
-			return res
-				.status(400)
-				.json({ message: "At least one product image is required" });
+        // Images
+        if (imageFiles.length === 0)
+            return res
+                .status(400)
+                .json({ message: "At least one product image is required" });
 
-		const uploadedImages = [];
-		for (const file of imageFiles) {
-			const uploaded = await uploadOnCloudinary(
-				file.path,
-				`${APP_NAME.toLowerCase()}/products`,
-			);
+        const uploadedImages = [];
+        for (const file of imageFiles) {
+            const uploaded = await uploadOnCloudinary(
+                file.path,
+                `${APP_NAME.toLowerCase()}/products`,
+            );
 
-			if (!uploaded?.secure_url)
-				return res.status(500).json({ message: "Image upload failed" });
+            if (!uploaded?.secure_url)
+                return res.status(500).json({ message: "Image upload failed" });
 
-			uploadedImages.push({
-				public_id: uploaded.public_id,
-				url: uploaded.secure_url,
-			});
-		}
+            uploadedImages.push({
+                public_id: uploaded.public_id,
+                url: uploaded.secure_url,
+            });
+        }
 
-		// Create product
-		const product = await Product.create({
-			seller: req.user._id,
-			title,
-			description,
-			price,
-			category,
-			tags,
-			condition,
-			location: parsedLocation,
-			images: uploadedImages,
-		});
+        // Create product
+        const product = await Product.create({
+            seller: req.user._id,
+            title,
+            description,
+            price,
+            category,
+            tags,
+            condition,
+            location: parsedLocation,
+            images: uploadedImages,
+        });
 
-		// Push product into user's products
-		user = await User.findByIdAndUpdate(req.user._id, {
-			$push: { products: product._id },
-			$set: { isSeller: true },
-		});
-		if (!user) {
-			await Product.findByIdAndDelete(product._id);
-			return res.status(404).json({ message: "User not found" });
-		}
+        // Push product into user's products
+        user = await User.findByIdAndUpdate(req.user._id, {
+            $push: { products: product._id },
+            $set: { isSeller: true },
+        });
+        if (!user) {
+            await Product.findByIdAndDelete(product._id);
+            return res.status(404).json({ message: "User not found" });
+        }
 
-		return res.status(201).json(product);
-	} catch (error) {
-		console.log("ERROR :: CONTROLLER :: createProduct ::", error.message);
-		return res.status(500).json({ message: "Internal Server Error" });
-	} finally {
-		for (const file of imageFiles) {
-			if (file && fs.existsSync(file)) fs.unlinkSync(file);
-		}
-	}
+        return res.status(201).json(product);
+    } catch (error) {
+        console.log("ERROR :: CONTROLLER :: createProduct ::", error.message);
+        return res.status(500).json({ message: "Internal Server Error" });
+    } finally {
+        for (const file of imageFiles) {
+            if (file && fs.existsSync(file)) fs.unlinkSync(file);
+        }
+    }
 };
 
 export const updateProduct = async (req, res) => {
-	// const imageFiles = req.files || [];
-	try {
-		const { productId } = req.params;
+    // const imageFiles = req.files || [];
+    try {
+        const { productId } = req.params;
 
-		// Validate product ID
-		if (!mongoose.Types.ObjectId.isValid(productId))
-			return res.status(400).json({ message: "Invalid product ID" });
+        // Validate product ID
+        if (!mongoose.Types.ObjectId.isValid(productId))
+            return res.status(400).json({ message: "Invalid product ID" });
 
-		// Find product
-		const product = await Product.findById(productId);
-		if (!product)
-			return res.status(404).json({ message: "Product not found" });
+        // Find product
+        const product = await Product.findById(productId);
+        if (!product)
+            return res.status(404).json({ message: "Product not found" });
 
-		if (product.seller.toString() !== req.user._id.toString())
-			return res.status(403).json({ message: "Not authorized" });
+        if (product.seller.toString() !== req.user._id.toString())
+            return res.status(403).json({ message: "Not authorized" });
 
-		let {
-			title,
-			description,
-			price,
-			category,
-			tags,
-			condition,
-			location,
-			status,
-		} = req.body;
+        let {
+            title,
+            description,
+            price,
+            category,
+            tags,
+            condition,
+            location,
+            status,
+        } = req.body;
 
-		// Sanitization
-		title = title?.trim();
-		description = description?.trim();
-		category = category?.trim();
-		tags = tags?.trim();
-		condition = condition?.trim();
+        // Sanitization
+        title = title?.trim();
+        description = description?.trim();
+        category = category?.trim();
+        tags = tags?.trim();
+        condition = condition?.trim();
 
-		// Title
-		if (title !== undefined) {
-			if (!title)
-				return res
-					.status(400)
-					.json({ message: "Title cannot be empty" });
+        // Title
+        if (title !== undefined) {
+            if (!title)
+                return res
+                    .status(400)
+                    .json({ message: "Title cannot be empty" });
 
-			if (title.length < MIN_TITLE_LEN || title.length > MAX_TITLE_LEN)
-				return res.status(400).json({
-					message: `Title must be between ${MIN_TITLE_LEN} and ${MAX_TITLE_LEN} characters`,
-				});
+            if (title.length < MIN_TITLE_LEN || title.length > MAX_TITLE_LEN)
+                return res.status(400).json({
+                    message: `Title must be between ${MIN_TITLE_LEN} and ${MAX_TITLE_LEN} characters`,
+                });
 
-			product.title = title;
-		}
+            product.title = title;
+        }
 
-		// Description
-		if (description !== undefined) {
-			if (!description)
-				return res
-					.status(400)
-					.json({ message: "Description cannot be empty" });
+        // Description
+        if (description !== undefined) {
+            if (!description)
+                return res
+                    .status(400)
+                    .json({ message: "Description cannot be empty" });
 
-			if (
-				description.length < MIN_DESCRIPTION_LEN ||
-				description.length > MAX_DESCRIPTION_LEN
-			)
-				return res.status(400).json({
-					message: `Description must be between ${MIN_DESCRIPTION_LEN} and ${MAX_DESCRIPTION_LEN} characters`,
-				});
+            if (
+                description.length < MIN_DESCRIPTION_LEN ||
+                description.length > MAX_DESCRIPTION_LEN
+            )
+                return res.status(400).json({
+                    message: `Description must be between ${MIN_DESCRIPTION_LEN} and ${MAX_DESCRIPTION_LEN} characters`,
+                });
 
-			product.description = description;
-		}
+            product.description = description;
+        }
 
-		// Price
-		if (price !== undefined) {
-			const numericPrice = Number(price);
-			if (price === "" || isNaN(numericPrice))
-				return res.status(400).json({ message: "Invalid price" });
+        // Price
+        if (price !== undefined) {
+            const numericPrice = Number(price);
+            if (price === "" || isNaN(numericPrice))
+                return res.status(400).json({ message: "Invalid price" });
 
-			if (numericPrice < 0)
-				return res.status(400).json({
-					message: "Price must be a non-negative number",
-				});
+            if (numericPrice < 0)
+                return res.status(400).json({
+                    message: "Price must be a non-negative number",
+                });
 
-			product.price = numericPrice;
-		}
+            product.price = numericPrice;
+        }
 
-		// Category
-		if (category !== undefined) {
-			if (!category)
-				return res
-					.status(400)
-					.json({ message: "Category cannot be empty" });
+        // Category
+        if (category !== undefined) {
+            if (!category)
+                return res
+                    .status(400)
+                    .json({ message: "Category cannot be empty" });
 
-			if (category.length > MAX_CATEGORY_LENGTH)
-				return res.status(400).json({
-					message: `Category cannot exceed ${MAX_CATEGORY_LENGTH} characters`,
-				});
+            if (category.length > MAX_CATEGORY_LENGTH)
+                return res.status(400).json({
+                    message: `Category cannot exceed ${MAX_CATEGORY_LENGTH} characters`,
+                });
 
-			product.category = category;
-		}
+            product.category = category;
+        }
 
-		// Condition
-		if (condition !== undefined) {
-			if (!VALID_CONDITIONS.includes(condition))
-				return res.status(400).json({
-					message: `Invalid condition. Allowed values are: ${VALID_CONDITIONS.join(", ")}`,
-				});
+        // Condition
+        if (condition !== undefined) {
+            if (!VALID_CONDITIONS.includes(condition))
+                return res.status(400).json({
+                    message: `Invalid condition. Allowed values are: ${VALID_CONDITIONS.join(", ")}`,
+                });
 
-			product.condition = condition;
-		}
+            product.condition = condition;
+        }
 
-		// Status
-		if (status !== undefined) {
-			if (!VALID_STATUS.includes(status))
-				return res.status(400).json({
-					message: `Invalid status. Allowed values are: ${VALID_STATUS.join(", ")}`,
-				});
+        // Status
+        if (status !== undefined) {
+            if (!VALID_STATUS.includes(status))
+                return res.status(400).json({
+                    message: `Invalid status. Allowed values are: ${VALID_STATUS.join(", ")}`,
+                });
 
-			product.status = status;
-		}
+            product.status = status;
+        }
 
-		// Tags
-		if (tags !== undefined) {
-			const tagsArr =
-				typeof tags === "string"
-					? tags
-							.split(/\s+/)
-							.filter((t) => t.startsWith("#"))
-							.map((t) => t.slice(1))
-					: [];
+        // Tags
+        if (tags !== undefined) {
+            const tagsArr =
+                typeof tags === "string"
+                    ? tags
+                          .split(/\s+/)
+                          .filter((t) => t.startsWith("#"))
+                          .map((t) => t.slice(1))
+                    : [];
 
-			product.tags = tagsArr;
-		}
+            product.tags = tagsArr;
+        }
 
-		// Location
-		if (location !== undefined) {
-			try {
-				product.location = JSON.parse(location);
-			} catch {
-				return res
-					.status(400)
-					.json({ message: "Invalid location format" });
-			}
-		}
+        // Location
+        if (location !== undefined) {
+            try {
+                product.location = JSON.parse(location);
+            } catch {
+                return res
+                    .status(400)
+                    .json({ message: "Invalid location format" });
+            }
+        }
 
-		// TODO: Add option to upload (append) new images as well
+        // TODO: Add option to upload (append) new images as well
 
-		await product.save();
-		return res.status(200).json(product);
-	} catch (error) {
-		console.log("ERROR :: CONTROLLER :: updateProduct ::", error.message);
-		return res.status(500).json({ message: "Internal Server Error" });
-	}
+        await product.save();
+        return res.status(200).json(product);
+    } catch (error) {
+        console.log("ERROR :: CONTROLLER :: updateProduct ::", error.message);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
 };
 
 export const deleteProduct = async (req, res) => {
-	try {
-		const { productId } = req.params;
+    try {
+        const { productId } = req.params;
 
-		// Validate product ID
-		if (!mongoose.Types.ObjectId.isValid(productId))
-			return res.status(400).json({ message: "Invalid product ID" });
+        // Validate product ID
+        if (!mongoose.Types.ObjectId.isValid(productId))
+            return res.status(400).json({ message: "Invalid product ID" });
 
-		// Find product
-		const product = await Product.findById(productId);
-		if (!product)
-			return res.status(404).json({ message: "Product not found" });
+        // Find product
+        const product = await Product.findById(productId);
+        if (!product)
+            return res.status(404).json({ message: "Product not found" });
 
-		// Authorization check
-		if (product.seller.toString() !== req.user._id.toString()) {
-			return res.status(403).json({
-				message: "You are not authorized to delete this product",
-			});
-		}
+        // Authorization check
+        if (product.seller.toString() !== req.user._id.toString()) {
+            return res.status(403).json({
+                message: "You are not authorized to delete this product",
+            });
+        }
 
-		// Delete images from Cloudinary
-		if (product.images && product.images.length > 0) {
-			for (const image of product.images) {
-				if (image.public_id) {
-					if (image.public_id) await deleteFromCloudinary(image);
-				}
-			}
-		}
+        // Delete images from Cloudinary
+        if (product.images && product.images.length > 0) {
+            for (const image of product.images) {
+                if (image.public_id) {
+                    if (image.public_id) await deleteFromCloudinary(image);
+                }
+            }
+        }
 
-		// Remove product from seller's products
-		const updatedUser = await User.findByIdAndUpdate(
-			product.seller,
-			{ $pull: { products: productId } },
-			{ new: true },
-		);
+        // Remove product from seller's products
+        const updatedUser = await User.findByIdAndUpdate(
+            product.seller,
+            { $pull: { products: productId } },
+            { new: true },
+        );
 
-		// Remove product from favorites
-		await User.updateMany(
-			{ favorites: productId },
-			{ $pull: { favorites: productId } },
-		);
+        // Remove product from users' favorites
+        await User.updateMany(
+            { favorites: productId },
+            { $pull: { favorites: productId } },
+        );
 
-		// If seller has no more products then they are not a seller
-		if (updatedUser && updatedUser.products.length === 0) {
-			await User.findByIdAndUpdate(product.seller, {
-				$set: { isSeller: false },
-			});
-		}
+        // If seller has no more products then they are not a seller
+        if (updatedUser && updatedUser.products.length === 0) {
+            await User.findByIdAndUpdate(product.seller, {
+                $set: { isSeller: false },
+            });
+        }
 
-		// Delete the product from DB
-		await product.deleteOne();
+        // Delete all bookings of the product
+        await Booking.deleteMany({ product: productId });
 
-		return res.status(200).json({
-			message: "Product deleted successfully",
-		});
-	} catch (error) {
-		console.log("ERROR :: CONTROLLER :: deleteProduct ::", error.message);
-		return res.status(500).json({ message: "Internal Server Error" });
-	}
+        // Delete the product from DB
+        await product.deleteOne();
+
+        return res.status(200).json({
+            message: "Product deleted successfully",
+        });
+    } catch (error) {
+        console.log("ERROR :: CONTROLLER :: deleteProduct ::", error.message);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
 };
 
 export const getProduct = async (req, res) => {
-	try {
-		const { productId } = req.params;
+    try {
+        const { productId } = req.params;
 
-		// Validate product ID
-		if (!mongoose.Types.ObjectId.isValid(productId))
-			return res.status(400).json({ message: "Invalid product ID" });
+        // Validate product ID
+        if (!mongoose.Types.ObjectId.isValid(productId))
+            return res.status(400).json({ message: "Invalid product ID" });
 
-		const product = await Product.findById(productId)
-			.populate("seller", "name email avatar rating")
-			.lean();
+        const product = await Product.findById(productId)
+            .populate("seller", "name email avatar rating")
+            .lean();
 
-		if (!product)
-			return res.status(404).json({ message: "Product not found" });
+        if (!product)
+            return res.status(404).json({ message: "Product not found" });
 
-		return res.status(200).json(product);
-	} catch (error) {
-		console.log("ERROR :: CONTROLLER :: getProduct ::", error.message);
-		return res.status(500).json({ message: "Internal Server Error" });
-	}
+        return res.status(200).json(product);
+    } catch (error) {
+        console.log("ERROR :: CONTROLLER :: getProduct ::", error.message);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
 };

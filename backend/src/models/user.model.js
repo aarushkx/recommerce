@@ -61,6 +61,16 @@ const userSchema = new Schema(
                 ref: "Product",
             },
         ],
+        role: {
+            type: String,
+            enum: ["user", "admin"],
+            default: "user",
+        },
+        isBlocked: {
+            type: Boolean,
+            default: false,
+            index: true,
+        },
     },
     { timestamps: true },
 );
