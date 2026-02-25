@@ -1,17 +1,17 @@
 import express from "express";
 import {
-	getUser,
-	updateProfile,
-	deleteAccount,
-	getUserProducts,
-	getUserBookings,
-	getUserSales,
-	getReviewsAboutUser,
+    getUser,
+    updateProfile,
+    deleteAccount,
+    getUserProducts,
+    getUserBookings,
+    getUserSales,
+    getReviewsAboutUser,
 } from "../controllers/user.controller.js";
 import {
-	addToFavorites,
-	removeFromFavorites,
-	getAllFavorites,
+    addToFavorites,
+    removeFromFavorites,
+    getAllFavorites,
 } from "../controllers/favorites.controller.js";
 import { protect } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -34,10 +34,10 @@ router.get("/:userId", protect, getUser);
 
 //PATCH
 router.patch(
-	"/update-profile",
-	protect,
-	upload.single("avatar"),
-	updateProfile,
+    "/update-profile",
+    protect,
+    upload.single("avatar"),
+    updateProfile,
 );
 
 //DELETE

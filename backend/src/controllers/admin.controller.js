@@ -4,7 +4,7 @@ import Booking from "../models/booking.model.js";
 import mongoose from "mongoose";
 import { deleteFromCloudinary } from "../lib/cloudinary.js";
 
-export const getAllUsers = async (req, res) => {
+export const getAllUsers = async (_req, res) => {
     try {
         const users = await User.find()
             .select("-password")
@@ -17,7 +17,7 @@ export const getAllUsers = async (req, res) => {
     }
 };
 
-export const getAllProducts = async (req, res) => {
+export const getAllProducts = async (_req, res) => {
     try {
         const products = await Product.find()
             .populate({

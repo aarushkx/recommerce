@@ -1,4 +1,4 @@
-export const health = (req, res) => {
+export const health = (_req, res) => {
     try {
         return res.status(200).json({ message: "OK" });
     } catch (error) {

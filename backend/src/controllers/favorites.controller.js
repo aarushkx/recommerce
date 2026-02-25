@@ -10,9 +10,9 @@ export const addToFavorites = async (req, res) => {
         // Validate product ID
         if (!mongoose.Types.ObjectId.isValid(productId))
             return res.status(400).json({ message: "Invalid product ID" });
-		
-		const user = await User.findById(userId);
-		if (!user) return res.status(404).json({ message: "User not found" });
+
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
 
         const product = await Product.findById(productId);
 
@@ -37,9 +37,7 @@ export const addToFavorites = async (req, res) => {
             $addToSet: { favorites: productId },
         });
 
-        return res
-            .status(200)
-            .json({ message: "Product added to favorites" });
+        return res.status(200).json({ message: "Product added to favorites" });
     } catch (error) {
         console.log("ERROR :: CONTROLLER :: addToFavorites ::", error.message);
         return res.status(500).json({ message: "Internal Server Error" });
