@@ -409,3 +409,120 @@ export const getProduct = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+export const getAllProducts = async (req, res) => {
+    try {
+        let {
+            page = 1,
+            limit = 10,
+            category,
+            city,
+            minPrice,
+            maxPrice,
+            search,
+            sort,
+        } = req.query;
+
+        // Pagination
+        page = parseInt(page);
+        limit = parseInt(limit);
+
+        if (isNaN(page) || page < 1)
+            return res.status(400).json({ message: "Invalid page number" });
+
+        if (isNaN(limit) || limit < 1)
+            return res.status(400).json({ message: "Invalid limit value" });
+
+        // Allow max 25 per request
+        if (limit > 25) limit = 25;
+
+        const skip = (page - 1) * limit;
+
+        // Filter
+        const filter = { status: "available" };
+
+        // Category
+        if (category) {
+            filter.category = {
+                $regex: `^${category.trim()}$`,
+                $options: "i",
+            };
+        }
+
+        // City (nested field)
+        if (city) {
+            filter["location.city"] = {
+                $regex: `^${city.trim()}$`,
+                $options: "i",
+            };
+        }
+
+        // Price Range
+        if (minPrice || maxPrice) {
+            const priceFilter = {};
+
+            if (minPrice) {
+                const parsedMin = Number(minPrice);
+                if (isNaN(parsedMin))
+                    return res.status(400).json({
+                        message: "Invalid minPrice value",
+                    });
+                priceFilter.$gte = parsedMin;
+            }
+            if (maxPrice) {
+                const parsedMax = Number(maxPrice);
+                if (isNaN(parsedMax))
+                    return res.status(400).json({
+                        message: "Invalid maxPrice value",
+                    });
+                priceFilter.$lte = parsedMax;
+            }
+
+            filter.price = priceFilter;
+        }
+
+        // Search (title and description)
+        if (search) {
+            const searchRegex = new RegExp(search.trim(), "i");
+            filter.$or = [{ title: searchRegex }, { description: searchRegex }];
+        }
+
+        // Sorting
+        let sortOption = { createdAt: -1 };
+
+        if (sort) {
+            switch (sort) {
+                case "price_asc":
+                    sortOption = { price: 1 };
+                    break;
+                case "price_desc":
+                    sortOption = { price: -1 };
+                    break;
+                case "newest":
+                    sortOption = { createdAt: -1 };
+                    break;
+                case "oldest":
+                    sortOption = { createdAt: 1 };
+                    break;
+                default:
+                    return res.status(400).json({
+                        message:
+                            "Invalid sort option. Allowed: price_asc, price_desc, newest, oldest",
+                    });
+            }
+        }
+
+        // Query
+        const products = await Product.find(filter)
+            .populate("seller", "name email phoneNumber avatar location rating")
+            .sort(sortOption)
+            .skip(skip)
+            .limit(limit)
+            .lean();
+
+        return res.status(200).json(products);
+    } catch (error) {
+        console.log("ERROR :: CONTROLLER :: getAllProducts ::", error.message);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+};
