@@ -17,6 +17,12 @@ export const VALID_CONDITIONS = ["new", "used", "refurbished"];
 export const VALID_STATUS = ["available", "booked", "sold"];
 export const MAX_CATEGORY_LENGTH = 50;
 
+// Review
+export const MIN_MESSAGE_LEN = 2;
+export const MAX_MESSAGE_LEN = 1000;
+export const MIN_RATING = 1;
+export const MAX_RATING = 5;
+
 // Gemini
 export const GEMINI_MODEL = "gemini-2.5-flash-lite";
 export const MAX_OUTPUT_TOKENS = 300;
