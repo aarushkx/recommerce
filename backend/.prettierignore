@@ -1,0 +1,33 @@
+# Node dependencies
+node_modules/
+
+# Environment files
+.env
+.env.*
+
+# Logs
+*.log
+logs/
+
+# Temporary uploads (multer temp folder)
+temp/
+
+# Build output (if you transpile later)
+dist/
+build/
+
+# Coverage reports
+coverage/
+
+# Ignore package files
+package.json
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Public generated assets (if any)
+public/uploads/
+
+# OS files
+.DS_Store
+Thumbs.db

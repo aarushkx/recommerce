@@ -4,6 +4,7 @@ import {
     updateProduct,
     deleteProduct,
     getProduct,
+    getAllProducts,
 } from "../controllers/product.controller.js";
 import { protect } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -21,5 +22,6 @@ router.delete("/:productId", protect, deleteProduct);
 
 // GET
 router.get("/:productId", getProduct);
+router.get("/", getAllProducts);
 
 export default router;

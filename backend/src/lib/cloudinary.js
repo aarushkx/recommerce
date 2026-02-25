@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import { APP_NAME } from "./config.js";
-import fs from "fs"
+import fs from "fs";
 
 export const uploadOnCloudinary = async (
     localFilePath,

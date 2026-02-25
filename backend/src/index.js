@@ -1,5 +1,5 @@
-import "./src/env/env.js";
-import connectDB from "./src/lib/db.js";
+import "./env/env.js";
+import connectDB from "./lib/db.js";
 import { v2 as cloudinary } from "cloudinary";
 import app from "./app.js";
 
