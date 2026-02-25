@@ -3,13 +3,13 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 // Routes import
-import healthRoutes from "./src/routes/health.routes.js";
-import authRoutes from "./src/routes/auth.routes.js";
-import userRoutes from "./src/routes/user.routes.js";
-import productRoutes from "./src/routes/product.routes.js";
-import bookingRoutes from "./src/routes/booking.routes.js";
-import aiRoutes from "./src/routes/ai.routes.js";
-import adminRoutes from "./src/routes/admin.routes.js";
+import healthRoutes from "./routes/health.routes.js";
+import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
+import productRoutes from "./routes/product.routes.js";
+import bookingRoutes from "./routes/booking.routes.js";
+import aiRoutes from "./routes/ai.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
 
 const app = express();
 

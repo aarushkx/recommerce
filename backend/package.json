@@ -21,8 +21,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development node --watch index.js",
-    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development node --watch ./src/index.js",
+    "start": "cross-env NODE_ENV=production node ./src/index.js",
     "build": "npm install",
     "check-format": "npx prettier --check .",
     "format": "npx prettier --write .",
