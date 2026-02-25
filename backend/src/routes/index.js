@@ -5,6 +5,7 @@ import productRoutes from "./product.routes.js";
 import bookingRoutes from "./booking.routes.js";
 import aiRoutes from "./ai.routes.js";
 import adminRoutes from "./admin.routes.js";
+import reviewRoutes from "./review.routes.js";
 
 export {
     healthRoutes,
@@ -14,4 +15,5 @@ export {
     bookingRoutes,
     aiRoutes,
     adminRoutes,
+    reviewRoutes,
 };
