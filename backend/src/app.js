@@ -10,6 +10,7 @@ import {
     aiRoutes,
     adminRoutes,
     reviewRoutes,
+    feedbackRoutes,
 } from "./routes/index.js";
 
 const app = express();
@@ -35,5 +36,6 @@ app.use("/api/v1/bookings", bookingRoutes);
 app.use("/api/v1/ai", aiRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
+app.use("/api/v1/feedback", feedbackRoutes);
 
 export default app;
