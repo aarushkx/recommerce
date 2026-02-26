@@ -9,6 +9,7 @@ import {
     bookingRoutes,
     aiRoutes,
     adminRoutes,
+    reviewRoutes,
 } from "./routes/index.js";
 
 const app = express();
@@ -33,5 +34,6 @@ app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/bookings", bookingRoutes);
 app.use("/api/v1/ai", aiRoutes);
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/reviews", reviewRoutes);
 
 export default app;
