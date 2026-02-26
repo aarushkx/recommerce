@@ -27,14 +27,14 @@ export const postReview = async (req, res) => {
 
         // Field validation
         // Message
-        if (!message)
+        if (!message?.trim())
             return res
                 .status(400)
                 .json({ message: "Review message is required" });
 
         if (
-            message.length < MIN_MESSAGE_LEN ||
-            message.length > MAX_MESSAGE_LEN
+            message.trim().length < MIN_MESSAGE_LEN ||
+            message.trim().length > MAX_MESSAGE_LEN
         )
             return res.status(400).json({
                 message: `Review must be between ${MIN_MESSAGE_LEN} to ${MAX_MESSAGE_LEN} characters`,
