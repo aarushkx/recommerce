@@ -2,13 +2,15 @@ import Review from "../models/review.model.js";
 import User from "../models/user.model.js";
 import Booking from "../models/booking.model.js";
 import {
+    APP_NAME,
     MIN_MESSAGE_LEN,
     MAX_MESSAGE_LEN,
     MIN_RATING,
     MAX_RATING,
 } from "../lib/config.js";
 import mongoose from "mongoose";
-import { deleteFromCloudinary } from "../lib/cloudinary.js";
+import {uploadOnCloudinary, deleteFromCloudinary } from "../lib/cloudinary.js";
+import fs from "fs";
 
 export const postReview = async (req, res) => {
     const imageLocalPath = req.file?.path;
@@ -40,7 +42,7 @@ export const postReview = async (req, res) => {
 
         // Ratings
         rating = Number(rating);
-        if (rating === undefined || isNaN(rating))
+        if (isNaN(rating))
             return res.status(400).json({ message: "Rating is required" });
 
         if (rating < MIN_RATING || rating > MAX_RATING)
@@ -65,12 +67,16 @@ export const postReview = async (req, res) => {
             });
 
         // Prevent unauthorized reviews
-        if (!userId.equals(booking.buyer))
+        const isAllowed = await Booking.findOne({
+            seller : seller,
+            buyer : userId,
+        })
+        if (!isAllowed)
             return res.status(403).json({
                 message: "You are not authorized to review this product",
             });
 
-        //Prevent duplicate reviews
+        // Prevent duplicate reviews
         const existingReview = await Review.findOne({
             reviewer: userId,
             booking: booking._id,
@@ -121,7 +127,7 @@ export const postReview = async (req, res) => {
             },
         ]);
 
-        const avgRating = result.length > 0 ? result[0].avgRating : 0;
+       const avgRating = result.length > 0 ? Number(result[0].avgRating.toFixed(1)) : 0;
 
         await User.findByIdAndUpdate(seller._id, {
             rating: avgRating,
@@ -223,7 +229,7 @@ export const deleteReview = async (req, res) => {
 
         const sellerId = review.seller;
 
-        //Delete review
+        // Delete review
         await review.deleteOne();
 
         // Re-calculate seller's rating
@@ -239,7 +245,7 @@ export const deleteReview = async (req, res) => {
             },
         ]);
 
-        const avgRating = result.length > 0 ? result[0].avgRating : 0;
+       const avgRating = result.length > 0 ? Number(result[0].avgRating.toFixed(1)) : 0;
 
         await User.findByIdAndUpdate(sellerId, {
             rating: avgRating,
