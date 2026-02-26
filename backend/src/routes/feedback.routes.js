@@ -16,5 +16,4 @@ router.post("/", protect, postFeedback);
 router.get("/get-feedbacks", protect, adminOnly, getAllFeedbacks);
 router.get("/:userId", protect, getMyFeedback);
 
-
 export default router;

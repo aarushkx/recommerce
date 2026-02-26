@@ -14,7 +14,7 @@ const router = express.Router();
 router.post("/:bookingId", protect, upload.single("image"), postReview);
 
 //GET
-router.get("/:buyerId",protect, getAllReviews);
+router.get("/:buyerId", protect, getAllReviews);
 router.get("/:reviewId", protect, getSingleReview);
 
 //DELETE

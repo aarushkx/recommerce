@@ -9,7 +9,7 @@ import {
     MAX_RATING,
 } from "../lib/config.js";
 import mongoose from "mongoose";
-import {uploadOnCloudinary, deleteFromCloudinary } from "../lib/cloudinary.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../lib/cloudinary.js";
 import fs from "fs";
 
 export const postReview = async (req, res) => {
@@ -68,9 +68,9 @@ export const postReview = async (req, res) => {
 
         // Prevent unauthorized reviews
         const isAllowed = await Booking.findOne({
-            seller : seller,
-            buyer : userId,
-        })
+            seller: seller,
+            buyer: userId,
+        });
         if (!isAllowed)
             return res.status(403).json({
                 message: "You are not authorized to review this product",
@@ -127,7 +127,8 @@ export const postReview = async (req, res) => {
             },
         ]);
 
-       const avgRating = result.length > 0 ? Number(result[0].avgRating.toFixed(1)) : 0;
+        const avgRating =
+            result.length > 0 ? Number(result[0].avgRating.toFixed(1)) : 0;
 
         await User.findByIdAndUpdate(seller._id, {
             rating: avgRating,
@@ -245,7 +246,8 @@ export const deleteReview = async (req, res) => {
             },
         ]);
 
-       const avgRating = result.length > 0 ? Number(result[0].avgRating.toFixed(1)) : 0;
+        const avgRating =
+            result.length > 0 ? Number(result[0].avgRating.toFixed(1)) : 0;
 
         await User.findByIdAndUpdate(sellerId, {
             rating: avgRating,
