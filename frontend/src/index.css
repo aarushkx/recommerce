@@ -6,8 +6,14 @@
         lofi;
 }
 
-@layer base {
+/* @layer base {
     html {
         font-family: "Inter", sans-serif;
     }
+} */
+
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+    border-width: 1.5px;
 }
