@@ -14,7 +14,7 @@ const useProductFilterStore = create((set) => ({
         set((state) => ({
             ...state,
             [key]: value,
-            page: 1, // reset page on filter change
+            page: 1, // Send the user back to page 1 because the list of results has completely changed
         })),
 
     setPage: (page) => set({ page }),

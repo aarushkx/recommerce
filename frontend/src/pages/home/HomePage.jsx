@@ -17,7 +17,7 @@ const HomePage = () => {
     const logoutMutation = useMutation({
         mutationFn: logoutUser,
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ["me"] });
+            await queryClient.invalidateQueries({ queryKey: ["user"] });
             navigate("/login");
         },
     });
