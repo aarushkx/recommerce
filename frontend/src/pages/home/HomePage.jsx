@@ -29,7 +29,7 @@ const HomePage = () => {
     return (
         <div className="min-h-screen p-6 space-y-8">
             {/* Top Bar */}
-            <div className="flex justify-between items-center">
+            {/* <div className="flex justify-between items-center">
                 <h1 className="text-xl font-semibold">Hello, {user?.name}</h1>
 
                 <button
@@ -38,7 +38,7 @@ const HomePage = () => {
                 >
                     Logout
                 </button>
-            </div>
+            </div> */}
 
             {/* Loading */}
             {isLoading ? (
