@@ -7,7 +7,7 @@ import Avatar from "./Avatar";
 
 const Header = () => {
     return (
-        <header className="fixed top-0 left-0 w-full z-50 bg-base-100 border-b">
+        <header className="fixed top-0 left-0 w-full z-50 bg-base-100 border-b border-accent/40">
             <div className="px-4 md:px-6 py-3 flex items-center justify-between gap-3">
                 {/* Left Section (Desktop Only) */}
                 <div className="hidden md:flex items-center gap-4">
