@@ -1,4 +1,5 @@
 import { LandingPage, LoginPage, OnboardingPage, HomePage } from "../pages";
+import UserProfile from "../pages/user/UserProfile";
 
 export const routes = [
     {
@@ -22,6 +23,11 @@ export const routes = [
     {
         path: "/home",
         element: <HomePage />,
+        protected: true,
+    },
+    {
+        path: "/profile",
+        element: <UserProfile />,
         protected: true,
     },
 ];
