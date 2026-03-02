@@ -1,5 +1,10 @@
-import { LandingPage, LoginPage, OnboardingPage, HomePage } from "../pages";
-import UserProfile from "../pages/user/UserProfile";
+import {
+    LandingPage,
+    LoginPage,
+    OnboardingPage,
+    HomePage,
+    UserProfilePage,
+} from "../pages";
 
 export const routes = [
     {
@@ -27,7 +32,7 @@ export const routes = [
     },
     {
         path: "/profile",
-        element: <UserProfile />,
+        element: <UserProfilePage />,
         protected: true,
     },
 ];

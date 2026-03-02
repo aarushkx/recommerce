@@ -3,7 +3,7 @@ import LocationBox from "./LocationBox";
 import SearchBar from "./SearchBar";
 import Filter from "./Filter";
 import FavoritesButton from "./FavoritesButton";
-import Avatar from "./Avatar";
+import UserButton from "./UserButton";
 
 const Header = () => {
     return (
@@ -26,7 +26,7 @@ const Header = () => {
                 {/* Right Section */}
                 <div className="flex items-center gap-1 md:gap-2">
                     <FavoritesButton />
-                    <Avatar />
+                    <UserButton />
                 </div>
             </div>
         </header>
