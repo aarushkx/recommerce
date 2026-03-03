@@ -3,9 +3,11 @@ import UserInfo from "../../components/user/UserInfo";
 import UserProductGrid from "../../components/user/UserProductGrid";
 import { Mail, Loader2 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const UserProfilePage = () => {
     const { data: user, isLoading } = useAuth();
+    const navigate = useNavigate();
 
     if (isLoading) {
         return (
