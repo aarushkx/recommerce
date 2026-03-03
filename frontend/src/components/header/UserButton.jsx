@@ -12,7 +12,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logoutUser } from "../../api/auth.api";
 import { useAuth } from "../../hooks/useAuth";
 
-const Avatar = () => {
+const UserButton = () => {
     const { data: user } = useAuth();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
@@ -160,4 +160,4 @@ const Avatar = () => {
     );
 };
 
-export default Avatar;
+export default UserButton;

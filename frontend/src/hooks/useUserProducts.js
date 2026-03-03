@@ -6,9 +6,7 @@ const useUserProducts = (userId) => {
 
     const userProducts = useMemo(() => {
         if (!products || !userId) return [];
-        return products.filter(
-            (product) => product.seller?._id === userId
-        );
+        return products.filter((product) => product.seller?._id === userId);
     }, [products, userId]);
 
     return {

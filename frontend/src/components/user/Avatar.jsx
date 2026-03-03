@@ -7,7 +7,9 @@ const Avatar = ({ size = "w-24" }) => {
     if (isLoading) {
         return (
             <div className="avatar placeholder">
-                <div className={`${size} rounded-full bg-base-300 animate-pulse`} />
+                <div
+                    className={`${size} rounded-full bg-base-300 animate-pulse`}
+                />
             </div>
         );
     }
@@ -26,8 +28,10 @@ const Avatar = ({ size = "w-24" }) => {
 
     return (
         <div className="avatar">
-            <div className={`${size} rounded-full ring ring-primary ring-offset-base-100 ring-offset-2`}>
-                {user.avatar?.url? (
+            <div
+                className={`${size} rounded-full ring ring-primary ring-offset-base-100 ring-offset-2`}
+            >
+                {user.avatar?.url ? (
                     <img
                         src={user.avatar.url}
                         alt={user.name}

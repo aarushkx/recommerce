@@ -1,4 +1,11 @@
-import { LandingPage, LoginPage, OnboardingPage, HomePage, UserProfilePage } from "../pages";
+import {
+    LandingPage,
+    LoginPage,
+    OnboardingPage,
+    HomePage,
+    UserProfilePage,
+} from "../pages";
+import ProductDetailsPage from "../pages/product/ProductDetailsPage";
 
 export const routes = [
     {
@@ -27,6 +34,11 @@ export const routes = [
     {
         path: "/profile",
         element: <UserProfilePage />,
+        protected: true,
+    },
+    {
+        path: "/products/:productId",
+        element: <ProductDetailsPage />,
         protected: true,
     },
 ];
