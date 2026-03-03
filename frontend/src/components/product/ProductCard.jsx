@@ -1,6 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import { MapPin, User, ArrowUpRight } from "lucide-react";
 
 const ProductCard = ({ product }) => {
+    const navigate = useNavigate();
+
     const { title, price, condition, location, images, seller } = product;
     const productImage =
         images?.[0]?.url ||
@@ -62,7 +65,10 @@ const ProductCard = ({ product }) => {
 
                 {/* Button */}
                 <div className="card-actions mt-4">
-                    <button className="btn btn-primary btn-sm btn-block">
+                    <button
+                        onClick={() => navigate(`/products/${product._id}`)}
+                        className="btn btn-primary btn-sm btn-block"
+                    >
                         View Product
                     </button>
                 </div>
