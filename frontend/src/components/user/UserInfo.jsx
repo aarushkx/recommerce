@@ -1,4 +1,5 @@
 import { Phone, MapPin, Calendar } from "lucide-react";
+import moment from "moment";
 
 const InfoRow = ({ icon: Icon, label, value }) => {
     if (!value) return null;
@@ -33,9 +34,7 @@ const UserInfo = ({ user }) => {
                 icon={Calendar}
                 label="Member Since"
                 value={
-                    user.createdAt
-                        ? new Date(user.createdAt).toLocaleDateString()
-                        : null
+                    user.createdAt ? moment(user.createdAt).format("ll") : null
                 }
             />
 

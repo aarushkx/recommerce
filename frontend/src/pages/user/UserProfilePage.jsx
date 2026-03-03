@@ -4,7 +4,7 @@ import UserProductGrid from "../../components/user/UserProductGrid";
 import { Mail, Loader2 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 
-const UserProfile = () => {
+const UserProfilePage = () => {
     const { data: user, isLoading } = useAuth();
 
     if (isLoading) {
@@ -61,4 +61,4 @@ const UserProfile = () => {
     );
 };
 
-export default UserProfile;
+export default UserProfilePage;
