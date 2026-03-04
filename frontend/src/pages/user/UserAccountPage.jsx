@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useAuth from "../../hooks/useAuth";
+import { useAuth } from "../../hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteAccount } from "../../api/user.api";
 import {

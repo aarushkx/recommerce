@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addToFavorites } from "../../api/user.api";
-import useFavorites from "../../hooks/useFavorites";
+import { useFavorites } from "../../hooks";
 
 const ProductInfo = ({ product }) => {
     const {

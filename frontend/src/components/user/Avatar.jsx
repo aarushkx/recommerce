@@ -1,5 +1,5 @@
 import { User } from "lucide-react";
-import useAuth from "../../hooks/useAuth";
+import { useAuth } from "../../hooks";
 
 const Avatar = ({ size = "w-24" }) => {
     const { data: user, isLoading } = useAuth();
