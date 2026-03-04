@@ -7,4 +7,13 @@ import UserAccountPage from "./user/UserAccountPage";
 import UpdateProfilePage from "./update/UpdateProfilePage";
 import UpdatePasswordPage from "./update/UpdatePasswordPage";
 
-export { LandingPage, LoginPage, OnboardingPage, HomePage, UserProfilePage, UserAccountPage, UpdateProfilePage, UpdatePasswordPage };
+export {
+    LandingPage,
+    LoginPage,
+    OnboardingPage,
+    HomePage,
+    UserProfilePage,
+    UserAccountPage,
+    UpdateProfilePage,
+    UpdatePasswordPage,
+};

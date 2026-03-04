@@ -134,7 +134,6 @@ const UpdateProfilePage = () => {
         setError("");
 
         const data = new FormData();
-
         data.append("name", formData.name);
         data.append("email", formData.email);
         data.append("phoneNumber", formData.phoneNumber);
@@ -159,17 +158,15 @@ const UpdateProfilePage = () => {
 
     return (
         <div className="min-h-screen py-20 px-4">
-            <div className="max-w-3xl mx-auto space-y-16">
+            <div className="max-w-3xl mx-auto">
                 {/* HEADER */}
                 <div className="text-center space-y-2">
                     <h1 className="text-3xl font-bold">Update Profile</h1>
                 </div>
 
-                {/* FORM CARD */}
-                <form
-                    onSubmit={handleSubmit}
-                    className="card bg-base-200 shadow-lg rounded-2xl p-10 space-y-10 hover:shadow-xl transition-all duration-300"
-                >
+                <div className="divider my-8" />
+
+                <form onSubmit={handleSubmit} className="space-y-10">
                     {/* AVATAR */}
                     <div className="flex flex-col items-center gap-4">
                         <div className="relative group">
@@ -198,36 +195,44 @@ const UpdateProfilePage = () => {
                     )}
 
                     {/* PERSONAL INFO */}
-                    <div className="grid md:grid-cols-2 gap-6">
-                        <InputField
-                            icon={User}
-                            label="Full Name"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                        />
-                        <InputField
-                            icon={Mail}
-                            label="Email Address"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                        />
-                        <InputField
-                            icon={Phone}
-                            label="Phone Number"
-                            name="phoneNumber"
-                            value={formData.phoneNumber}
-                            onChange={handleChange}
-                        />
+                    <div className="space-y-6">
+                        <h2 className="text-xl font-semibold">
+                            Personal Information
+                        </h2>
+
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <InputField
+                                icon={User}
+                                label="Full Name"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                            />
+                            <InputField
+                                icon={Mail}
+                                label="Email Address"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                            />
+                            <InputField
+                                icon={Phone}
+                                label="Phone Number"
+                                name="phoneNumber"
+                                value={formData.phoneNumber}
+                                onChange={handleChange}
+                            />
+                        </div>
                     </div>
 
+                    <div className="divider my-8" />
+
                     {/* LOCATION */}
-                    <div className="pt-6 border-t border-base-300 space-y-6">
-                        <h3 className="text-lg font-medium flex items-center gap-2">
+                    <div className="space-y-6">
+                        <h2 className="text-xl font-semibold flex items-center gap-2">
                             <MapPin className="w-5 h-5 text-primary" />
                             Location Details
-                        </h3>
+                        </h2>
 
                         <div className="grid md:grid-cols-2 gap-6">
                             <InputField
@@ -269,7 +274,7 @@ const UpdateProfilePage = () => {
                     </div>
 
                     {/* ACTIONS */}
-                    <div className="flex justify-end gap-4 pt-6 border-t border-base-300">
+                    <div className="flex justify-end gap-4 pt-6 border-t border-base-300 ">
                         <button
                             type="button"
                             className="btn btn-ghost"

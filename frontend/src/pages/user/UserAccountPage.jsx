@@ -75,7 +75,7 @@ const UserAccountPage = () => {
 
     return (
         <div className="min-h-screen py-20 px-4">
-            <div className="max-w-3xl mx-auto space-y-16">
+            <div className="max-w-3xl mx-auto">
                 {/* HEADER */}
                 <div className="text-center space-y-2">
                     <h1 className="text-3xl font-bold">Account</h1>
@@ -84,8 +84,10 @@ const UserAccountPage = () => {
                     </p>
                 </div>
 
-                {/* ACCOUNT INFO */}
-                <div className="card bg-base-200 shadow-lg rounded-2xl p-10 space-y-8 hover:shadow-xl transition-all duration-300">
+                <div className="divider my-8" />
+
+                {/* ACCOUNT INFORMATION */}
+                <div className="space-y-8">
                     <h2 className="text-xl font-semibold">
                         Account Information
                     </h2>
@@ -113,7 +115,7 @@ const UserAccountPage = () => {
                         />
                     </div>
 
-                    <div className="pt-6 border-t border-base-300 space-y-2 text-base-content/70">
+                    <div className="pt-6 space-y-1 text-base-content/70">
                         <div className="flex items-center gap-3">
                             <Calendar className="w-5 h-5 text-primary" />
                             <span className="text-sm">
@@ -125,29 +127,16 @@ const UserAccountPage = () => {
                                 </span>
                             </span>
                         </div>
-
-                        {user.lastLogin && (
-                            <div className="flex items-center gap-3">
-                                <ShieldAlert className="w-5 h-5 text-primary" />
-                                <span className="text-sm">
-                                    Last login on{" "}
-                                    <span className="font-medium text-base-content">
-                                        {moment(user.lastLogin).format(
-                                            "MMMM Do YYYY, h:mm A",
-                                        )}
-                                    </span>
-                                </span>
-                            </div>
-                        )}
                     </div>
                 </div>
 
+                <div className="divider my-8" />
+
                 {/* ACTIVITY SUMMARY */}
-                <div className="card bg-base-200 shadow-lg rounded-2xl p-10 space-y-8 hover:shadow-xl transition-all duration-300">
+                <div className="space-y-8">
                     <h2 className="text-xl font-semibold">Activity Summary</h2>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        {/* Listed Products */}
                         <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-primary/5 hover:bg-primary/10 transition">
                             <Package className="w-6 h-6 text-primary" />
                             <span className="text-lg font-semibold">
@@ -158,7 +147,6 @@ const UserAccountPage = () => {
                             </span>
                         </div>
 
-                        {/* Sold */}
                         <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-primary/5 hover:bg-primary/10 transition">
                             <ShoppingBag className="w-6 h-6 text-primary" />
                             <span className="text-lg font-semibold">
@@ -169,7 +157,6 @@ const UserAccountPage = () => {
                             </span>
                         </div>
 
-                        {/* Purchased */}
                         <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-primary/5 hover:bg-primary/10 transition">
                             <ShoppingBag className="w-6 h-6 text-primary" />
                             <span className="text-lg font-semibold">
@@ -180,7 +167,6 @@ const UserAccountPage = () => {
                             </span>
                         </div>
 
-                        {/* Favorites */}
                         <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-primary/5 hover:bg-primary/10 transition">
                             <Heart className="w-6 h-6 text-primary" />
                             <span className="text-lg font-semibold">
@@ -192,9 +178,8 @@ const UserAccountPage = () => {
                         </div>
                     </div>
 
-                    {/* Seller Rating (Only If Seller) */}
                     {user.isSeller && user.rating && (
-                        <div className="pt-6 border-t border-base-300 flex items-center gap-3">
+                        <div className="pt-6 flex items-center gap-3">
                             <Star className="w-5 h-5 text-yellow-500" />
                             <span className="text-sm text-base-content/70">
                                 Seller Rating:
@@ -206,12 +191,14 @@ const UserAccountPage = () => {
                     )}
                 </div>
 
+                <div className="divider my-8" />
+
                 {/* SECURITY */}
-                <div className="card bg-base-200 shadow-lg rounded-2xl p-10 space-y-6 hover:shadow-xl transition-all duration-300">
+                <div className="space-y-6">
                     <h2 className="text-xl font-semibold">Security</h2>
 
                     <button
-                        className="btn btn-outline btn-primary w-fit transition-all hover:scale-105"
+                        className="btn btn-outline btn-primary w-fit"
                         onClick={() => navigate("/update-password")}
                     >
                         <Lock className="w-4 h-4" />
@@ -219,8 +206,10 @@ const UserAccountPage = () => {
                     </button>
                 </div>
 
+                <div className="divider my-8" />
+
                 {/* DANGER ZONE */}
-                <div className="card bg-base-200 shadow-lg rounded-2xl p-10 space-y-4 border border-error/40 hover:shadow-xl transition-all duration-300">
+                <div className="space-y-6 ">
                     <h2 className="text-xl font-semibold text-error">
                         Danger Zone
                     </h2>
@@ -231,7 +220,7 @@ const UserAccountPage = () => {
                     </p>
 
                     <button
-                        className="btn btn-error w-fit transition-all hover:scale-105"
+                        className="btn btn-error w-fit"
                         onClick={() => setShowConfirm(true)}
                     >
                         Delete Account
