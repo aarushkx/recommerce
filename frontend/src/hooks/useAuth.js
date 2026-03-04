@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "../api/auth.api";
 
-export const useAuth = () => {
+const useAuth = () => {
     return useQuery({
         queryKey: ["user"],
         queryFn: async () => {
@@ -17,3 +17,5 @@ export const useAuth = () => {
         staleTime: 5 * 60 * 1000,
     });
 };
+
+export default useAuth;

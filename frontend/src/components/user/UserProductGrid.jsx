@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Loader2, Plus } from "lucide-react";
 import useUserProducts from "../../hooks/useUserProducts";
-import { useAuth } from "../../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 import ProductCard from "../../components/product/ProductCard";
 
 const UserProductGrid = () => {

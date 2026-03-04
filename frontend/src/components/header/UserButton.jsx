@@ -10,7 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logoutUser } from "../../api/auth.api";
-import { useAuth } from "../../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 
 const UserButton = () => {
     const { data: user } = useAuth();

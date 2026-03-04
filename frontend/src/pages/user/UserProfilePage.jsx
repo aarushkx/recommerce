@@ -2,7 +2,7 @@ import Avatar from "../../components/user/Avatar";
 import UserInfo from "../../components/user/UserInfo";
 import UserProductGrid from "../../components/user/UserProductGrid";
 import { Mail, Loader2 } from "lucide-react";
-import { useAuth } from "../../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 const UserProfilePage = () => {

@@ -95,8 +95,7 @@ const UpdatePasswordPage = () => {
         e.preventDefault();
         setError("");
 
-        if (!formData.oldPassword)
-            return setError("Old password is required");
+        if (!formData.oldPassword) return setError("Old password is required");
 
         if (formData.newPassword.length < 6)
             return setError("Password must be at least 6 characters");
@@ -115,12 +114,12 @@ const UpdatePasswordPage = () => {
     return (
         <div className="min-h-screen py-20 px-4">
             <div className="max-w-2xl mx-auto space-y-16">
-
                 {/* HEADER */}
                 <div className="text-center space-y-2">
                     <h1 className="text-3xl font-bold">Change Password</h1>
                     <p className="text-base-content/60 text-sm">
-                        For security reasons, you’ll be logged out after updating your password
+                        For security reasons, you’ll be logged out after
+                        updating your password
                     </p>
                 </div>
 
@@ -130,7 +129,6 @@ const UpdatePasswordPage = () => {
                     className="card bg-base-200 shadow-lg rounded-2xl p-10 space-y-8 hover:shadow-xl transition-all duration-300"
                 >
                     <div className="space-y-6">
-
                         <PasswordInput
                             label="Old Password"
                             name="oldPassword"
@@ -166,9 +164,7 @@ const UpdatePasswordPage = () => {
                     </div>
 
                     {error && (
-                        <div className="alert alert-error text-sm">
-                            {error}
-                        </div>
+                        <div className="alert alert-error text-sm">{error}</div>
                     )}
 
                     {/* ACTIONS */}
