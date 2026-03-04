@@ -4,6 +4,9 @@ import {
     OnboardingPage,
     HomePage,
     UserProfilePage,
+    UserAccountPage,
+    UpdateProfilePage,
+    UpdatePasswordPage,
 } from "../pages";
 import ProductDetailsPage from "../pages/product/ProductDetailsPage";
 
@@ -37,8 +40,23 @@ export const routes = [
         protected: true,
     },
     {
+        path: "/account",
+        element: <UserAccountPage />,
+        protected: true,
+    },
+    {
         path: "/products/:productId",
         element: <ProductDetailsPage />,
+        protected: true,
+    },
+    {
+        path: "/update-profile",
+        element: <UpdateProfilePage />,
+        protected: true,
+    },
+    {
+        path: "/update-password",
+        element: <UpdatePasswordPage />,
         protected: true,
     },
 ];
