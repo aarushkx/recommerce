@@ -8,6 +8,7 @@ import UserAccountPage from "./user/UserAccountPage";
 import UpdateProfilePage from "./update/UpdateProfilePage";
 import UpdatePasswordPage from "./update/UpdatePasswordPage";
 import UserFavoritesPage from "./user/UserFavoritesPage";
+import AddProductPage from "./product/AddProductPage";
 
 export {
     LandingPage,
@@ -20,4 +21,5 @@ export {
     UpdateProfilePage,
     UpdatePasswordPage,
     UserFavoritesPage,
+    AddProductPage,
 };
