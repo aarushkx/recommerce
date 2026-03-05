@@ -157,8 +157,8 @@ const UpdateProfilePage = () => {
     if (!user) return null;
 
     return (
-        <div className="min-h-screen py-20 px-4">
-            <div className="max-w-3xl mx-auto">
+        <div className="min-h-screen py-16 px-4">
+            <div className="max-w-2xl mx-auto">
                 {/* HEADER */}
                 <div className="text-center space-y-2">
                     <h1 className="text-3xl font-bold">Update Profile</h1>
@@ -189,10 +189,6 @@ const UpdateProfilePage = () => {
                             Click to change your avatar (max 2MB)
                         </p>
                     </div>
-
-                    {error && (
-                        <div className="alert alert-error text-sm">{error}</div>
-                    )}
 
                     {/* PERSONAL INFO */}
                     <div className="space-y-6">
@@ -295,6 +291,7 @@ const UpdateProfilePage = () => {
                         </button>
                     </div>
                 </form>
+                {error && <div className="text-error text-sm">{error}</div>}
             </div>
         </div>
     );

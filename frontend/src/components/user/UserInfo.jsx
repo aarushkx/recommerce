@@ -27,7 +27,7 @@ const UserInfo = ({ user }) => {
             <InfoRow
                 icon={MapPin}
                 label="Location"
-                value={user.location?.city}
+                value={`${user.location?.city}, ${user.location?.state}`}
             />
 
             <InfoRow

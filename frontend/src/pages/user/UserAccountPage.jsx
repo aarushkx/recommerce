@@ -10,11 +10,11 @@ import {
     MapPin,
     Calendar,
     Lock,
-    ShieldAlert,
     Package,
     Heart,
     ShoppingBag,
     Star,
+    HandCoins,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
@@ -23,11 +23,8 @@ const InfoRow = ({ icon: Icon, label, value }) => {
     if (!value) return null;
 
     return (
-        <div className="flex items-start gap-4 transition-all duration-200 hover:translate-x-1">
-            <div className="p-2 rounded-xl bg-primary/10">
-                <Icon className="w-5 h-5 text-primary" />
-            </div>
-
+        <div className="flex items-start gap-4 ">
+            <Icon className="w-5 h-5 m-3 text-primary" />
             <div className="flex flex-col">
                 <span className="text-sm text-base-content/60">{label}</span>
                 <span className="text-base font-medium wrap-break-word">
@@ -74,8 +71,8 @@ const UserAccountPage = () => {
         .join(", ");
 
     return (
-        <div className="min-h-screen py-20 px-4">
-            <div className="max-w-3xl mx-auto">
+        <div className="min-h-screen max-w-4xl mx-auto px-4 py-16">
+            <div>
                 {/* HEADER */}
                 <div className="text-center space-y-2">
                     <h1 className="text-3xl font-bold">Account</h1>
@@ -148,7 +145,7 @@ const UserAccountPage = () => {
                         </div>
 
                         <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-primary/5 hover:bg-primary/10 transition">
-                            <ShoppingBag className="w-6 h-6 text-primary" />
+                            <HandCoins className="w-6 h-6 text-primary" />
                             <span className="text-lg font-semibold">
                                 {user.sold?.length || 0}
                             </span>

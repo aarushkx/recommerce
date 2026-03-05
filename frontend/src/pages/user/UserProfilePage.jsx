@@ -22,7 +22,7 @@ const UserProfilePage = () => {
     return (
         <div className="min-h-screen">
             {/* Profile Header */}
-            <div className="max-w-6xl mx-auto px-4 py-16">
+            <div className="max-w-3xl mx-auto px-4 py-16">
                 <div className="flex flex-col md:flex-row items-center md:items-start justify-center gap-12">
                     {/* Left Side */}
 
@@ -55,7 +55,7 @@ const UserProfilePage = () => {
             </div>
 
             {/* Products Section */}
-            <div className="max-w-6xl mx-auto px-4 pb-16">
+            <div className="max-w-4xl mx-auto px-4 pb-16">
                 <div className="divider my-8" />
                 <UserProductGrid />
             </div>
