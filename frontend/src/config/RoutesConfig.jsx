@@ -10,6 +10,7 @@ import {
     UpdatePasswordPage,
     UserFavoritesPage,
     AddProductPage,
+    UserFeedbackPage,
 } from "../pages";
 
 export const routes = [
@@ -69,6 +70,11 @@ export const routes = [
     {
         path: "/create-product",
         element: <AddProductPage />,
+        protected: true,
+    },
+    {
+        path: "/feedback",
+        element: <UserFeedbackPage />,
         protected: true,
     },
 ];
