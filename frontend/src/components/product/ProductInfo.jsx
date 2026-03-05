@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addToFavorites } from "../../api/user.api";
-import { useFavorites } from "../../hooks";
+import { useFavorites, useAuth } from "../../hooks";
 
 const ProductInfo = ({ product }) => {
     const {
@@ -25,8 +25,10 @@ const ProductInfo = ({ product }) => {
 
     const queryClient = useQueryClient();
     const { data: favorites } = useFavorites();
+    const { data: currentUser } = useAuth();
 
     const isFavorite = favorites?.some((fav) => fav._id === _id);
+    const isOwner = currentUser?._id === seller?._id;
 
     const mutation = useMutation({
         mutationFn: addToFavorites,
@@ -107,14 +109,14 @@ const ProductInfo = ({ product }) => {
 
             {/* Actions */}
             <div className="mt-8 flex flex-col gap-3">
-                <button className="btn btn-primary gap-2">
+                <button className="btn btn-primary gap-2" disabled={isOwner}>
                     <CalendarCheck size={18} />
                     Book Now
                 </button>
 
                 <button
                     className="btn btn-outline gap-2"
-                    disabled={isFavorite || mutation.isPending}
+                    disabled={isOwner || isFavorite || mutation.isPending}
                     onClick={handleAddFavorite}
                 >
                     {mutation.isPending ? (
