@@ -1,7 +1,18 @@
-import { User, MapPin, Heart, CalendarCheck, Info } from "lucide-react";
+import {
+    User,
+    MapPin,
+    Heart,
+    CalendarCheck,
+    Info,
+    Loader2,
+} from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addToFavorites } from "../../api/user.api";
+import { useFavorites, useAuth } from "../../hooks";
 
 const ProductInfo = ({ product }) => {
     const {
+        _id,
         title,
         price,
         description,
@@ -11,6 +22,24 @@ const ProductInfo = ({ product }) => {
         category,
         status,
     } = product;
+
+    const queryClient = useQueryClient();
+    const { data: favorites } = useFavorites();
+    const { data: currentUser } = useAuth();
+
+    const isFavorite = favorites?.some((fav) => fav._id === _id);
+    const isOwner = currentUser?._id === seller?._id;
+
+    const mutation = useMutation({
+        mutationFn: addToFavorites,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["favorites"] });
+        },
+    });
+
+    const handleAddFavorite = () => {
+        mutation.mutate(_id);
+    };
 
     return (
         <div className="flex flex-col">
@@ -80,14 +109,32 @@ const ProductInfo = ({ product }) => {
 
             {/* Actions */}
             <div className="mt-8 flex flex-col gap-3">
-                <button className="btn btn-primary gap-2">
+                <button className="btn btn-primary gap-2" disabled={isOwner}>
                     <CalendarCheck size={18} />
                     Book Now
                 </button>
 
-                <button className="btn btn-outline gap-2">
-                    <Heart size={18} />
-                    Add to Favorites
+                <button
+                    className="btn btn-outline gap-2"
+                    disabled={isOwner || isFavorite || mutation.isPending}
+                    onClick={handleAddFavorite}
+                >
+                    {mutation.isPending ? (
+                        <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Adding...
+                        </>
+                    ) : (
+                        <>
+                            <Heart
+                                size={18}
+                                className={isFavorite ? "fill-current" : ""}
+                            />
+                            {isFavorite
+                                ? "Added to Favorites"
+                                : "Add to Favorites"}
+                        </>
+                    )}
                 </button>
             </div>
         </div>

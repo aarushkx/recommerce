@@ -1,14 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { Loader2, Plus } from "lucide-react";
-import useUserProducts from "../../hooks/useUserProducts";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth, useUserProducts } from "../../hooks";
 import ProductCard from "../../components/product/ProductCard";
 
 const UserProductGrid = () => {
     const navigate = useNavigate();
     const { data: user } = useAuth();
 
-    // Fetching data from api by filtering
+    // Fetching data from API by filtering
     const { data: products, isLoading } = useUserProducts(user?._id);
 
     if (isLoading) {
@@ -23,7 +22,7 @@ const UserProductGrid = () => {
     // No products case
     if (!products || products.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
+            <div className="flex flex-col items-center justify-center gap-4 text-center">
                 <div className="w-16 h-16 rounded-full bg-base-200 flex items-center justify-center">
                     <Plus className="w-8 h-8 text-primary" />
                 </div>

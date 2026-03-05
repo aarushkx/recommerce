@@ -3,12 +3,14 @@ import {
     LoginPage,
     OnboardingPage,
     HomePage,
+    ProductDetailsPage,
     UserProfilePage,
     UserAccountPage,
     UpdateProfilePage,
     UpdatePasswordPage,
+    UserFavoritesPage,
+    AddProductPage,
 } from "../pages";
-import ProductDetailsPage from "../pages/product/ProductDetailsPage";
 
 export const routes = [
     {
@@ -57,6 +59,16 @@ export const routes = [
     {
         path: "/update-password",
         element: <UpdatePasswordPage />,
+        protected: true,
+    },
+    {
+        path: "/favorites",
+        element: <UserFavoritesPage />,
+        protected: true,
+    },
+    {
+        path: "/create-product",
+        element: <AddProductPage />,
         protected: true,
     },
 ];

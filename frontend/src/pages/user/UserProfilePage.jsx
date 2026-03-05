@@ -2,7 +2,7 @@ import Avatar from "../../components/user/Avatar";
 import UserInfo from "../../components/user/UserInfo";
 import UserProductGrid from "../../components/user/UserProductGrid";
 import { Mail, Loader2 } from "lucide-react";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../hooks";
 import { useNavigate } from "react-router-dom";
 
 const UserProfilePage = () => {
@@ -21,10 +21,10 @@ const UserProfilePage = () => {
 
     return (
         <div className="min-h-screen">
-            {/* PROFILE HEADER */}
+            {/* Profile Header */}
             <div className="max-w-6xl mx-auto px-4 py-16">
                 <div className="flex flex-col md:flex-row items-center md:items-start justify-center gap-12">
-                    {/* LEFT SIDE */}
+                    {/* Left Side */}
 
                     <div className="flex flex-col items-center gap-6">
                         <Avatar size="w-28" />
@@ -47,14 +47,14 @@ const UserProfilePage = () => {
                         </button>
                     </div>
 
-                    {/* RIGHT SIDE */}
+                    {/* Right Side */}
                     <div className="w-full max-w-md">
                         <UserInfo user={user} />
                     </div>
                 </div>
             </div>
 
-            {/* PRODUCTS SECTION */}
+            {/* Products Section */}
             <div className="max-w-6xl mx-auto px-4 pb-16">
                 <div className="divider my-8" />
                 <UserProductGrid />

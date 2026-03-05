@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import useProduct from "../../hooks/useProduct";
+import { useProduct } from "../../hooks";
 import ProductImageGallery from "../../components/product/ProductImageGallery";
 import ProductInfo from "../../components/product/ProductInfo";
 

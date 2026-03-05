@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../hooks";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteAccount } from "../../api/user.api";
 import {
@@ -30,7 +30,7 @@ const InfoRow = ({ icon: Icon, label, value }) => {
 
             <div className="flex flex-col">
                 <span className="text-sm text-base-content/60">{label}</span>
-                <span className="text-base font-medium break-words">
+                <span className="text-base font-medium wrap-break-word">
                     {value}
                 </span>
             </div>

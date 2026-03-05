@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../hooks";
 
 const LocationBox = () => {
     const { data: user } = useAuth();

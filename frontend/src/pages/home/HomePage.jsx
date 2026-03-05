@@ -1,4 +1,4 @@
-import useProducts from "../../hooks/useProducts";
+import { useProducts } from "../../hooks";
 import useProductFilterStore from "../../store/product-filter.store";
 import ProductCard from "../../components/product/ProductCard";
 import { Loader2 } from "lucide-react";

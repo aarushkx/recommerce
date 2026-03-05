@@ -6,13 +6,20 @@
         lofi;
 }
 
+::selection {
+    background-color: var(--color-primary);
+    color: var(--color-secondary-content);
+}
+
 /* @layer base {
     html {
         font-family: "Inter", sans-serif;
     }
 } */
 
-input:focus {
+input:focus,
+textarea:focus,
+select:focus {
     outline: none;
     border-color: var(--primary);
     border-width: 1.5px;
