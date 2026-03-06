@@ -142,24 +142,28 @@ const UserButton = () => {
                     </div>
 
                     {/* Navigation Menu */}
-                    <ul className="menu p-4 text-base-content grow">
-                        {menuItems.map((item, index) => (
-                            <li key={index}>
-                                <button
-                                    onClick={() => {
-                                        item.onClick();
-                                        closeDrawer();
-                                    }}
-                                    className={`py-3 ${item.className || ""}`}
-                                >
-                                    {item.icon}
-                                    <span className="text-md">
-                                        {item.label}
-                                    </span>
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
+                    <div className="grow overflow-y-auto">
+                        <ul className="menu p-0 w-full">
+                            {menuItems.map((item, index) => (
+                                <li key={index} className="w-full">
+                                    <button
+                                        onClick={() => {
+                                            item.onClick();
+                                            closeDrawer();
+                                        }}
+                                        className={`flex w-full items-center gap-4 px-6 py-4 hover:bg-base-200 transition-all ${item.className || ""}`}
+                                    >
+                                        <span className="opacity-70">
+                                            {item.icon}
+                                        </span>
+                                        <span className="text-md">
+                                            {item.label}
+                                        </span>
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
