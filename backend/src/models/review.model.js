@@ -13,11 +13,6 @@ const reviewSchema = new Schema(
             ref: "User",
             required: true,
         },
-        booking: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Booking",
-            required: true,
-        },
         image: imageSchema,
         message: {
             type: String,

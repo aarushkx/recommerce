@@ -18,7 +18,13 @@ import fs from "fs";
 // USER PROFILE
 export const getUser = async (req, res) => {
     try {
-        const user = await User.findById(req.user._id).select("-password");
+        const { userId } = req.params;
+
+        // Validate user ID
+        if (!mongoose.Types.ObjectId.isValid(userId))
+            return res.status(400).json({ message: "Invalid user ID" });
+
+        const user = await User.findById(userId).select("-password");
         if (!user) return res.status(404).json({ message: "User not found" });
 
         return res.status(200).json(user);
