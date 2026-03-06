@@ -77,6 +77,12 @@ export const register = async (req, res) => {
                 .status(400)
                 .json({ message: "All location fields are required" });
 
+        // Check if country is India
+        if (country?.trim().toLowerCase() !== "india") {
+            return res.status(400).json({
+                message: "Sorry, we're not available at your location yet",
+            });
+        }
         // Check existing user
         const existingUser = await User.findOne({
             $or: [{ email }, { phoneNumber }],

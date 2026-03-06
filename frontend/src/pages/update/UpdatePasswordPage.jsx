@@ -2,29 +2,25 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateProfile } from "../../api/user.api";
 import { logoutUser } from "../../api/auth.api";
-import { Loader2, KeyRound, Eye, EyeOff } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const PasswordInput = ({
-    label,
     name,
     value,
     onChange,
     visible,
     toggleVisibility,
+    placeholder,
 }) => (
     <div className="flex flex-col gap-2">
-        <label className="text-sm text-base-content/60 flex items-center gap-2">
-            <KeyRound className="w-4 h-4 text-primary" />
-            {label}
-        </label>
-
         <div className="relative">
             <input
                 type={visible ? "text" : "password"}
                 name={name}
                 value={value}
                 onChange={onChange}
+                placeholder={placeholder}
                 className="input input-bordered w-full pr-10"
             />
 
@@ -64,12 +60,8 @@ const UpdatePasswordPage = () => {
     const updateMutation = useMutation({
         mutationFn: updateProfile,
         onSuccess: async () => {
-            //  Auto logout after password change
             await logoutUser();
-
-            // Clear all cached queries
             queryClient.clear();
-
             navigate("/login");
         },
         onError: (err) => {
@@ -96,12 +88,9 @@ const UpdatePasswordPage = () => {
         setError("");
 
         if (!formData.oldPassword) return setError("Old password is required");
-
-        if (formData.newPassword.length < 6)
-            return setError("Password must be at least 6 characters");
-
-        if (formData.newPassword !== formData.confirmPassword)
-            return setError("Passwords do not match");
+        if (!formData.newPassword) return setError("New password is required");
+        if (!formData.confirmPassword)
+            return setError("Confirm password is required");
 
         const data = new FormData();
         data.append("oldPassword", formData.oldPassword);
@@ -112,8 +101,8 @@ const UpdatePasswordPage = () => {
     };
 
     return (
-        <div className="min-h-screen py-20 px-4">
-            <div className="max-w-2xl mx-auto space-y-16">
+        <div className="min-h-screen py-16 px-4">
+            <div className="max-w-2xl mx-auto">
                 {/* HEADER */}
                 <div className="text-center space-y-2">
                     <h1 className="text-3xl font-bold">Change Password</h1>
@@ -123,14 +112,13 @@ const UpdatePasswordPage = () => {
                     </p>
                 </div>
 
-                {/* FORM CARD */}
-                <form
-                    onSubmit={handleSubmit}
-                    className="card bg-base-200 shadow-lg rounded-2xl p-10 space-y-8 hover:shadow-xl transition-all duration-300"
-                >
+                <div className="divider my-8" />
+
+                {/* FORM SECTION */}
+                <form onSubmit={handleSubmit} className="space-y-8">
                     <div className="space-y-6">
                         <PasswordInput
-                            label="Old Password"
+                            placeholder="Old Password"
                             name="oldPassword"
                             value={formData.oldPassword}
                             onChange={handleChange}
@@ -141,7 +129,7 @@ const UpdatePasswordPage = () => {
                         />
 
                         <PasswordInput
-                            label="New Password"
+                            placeholder="New Password"
                             name="newPassword"
                             value={formData.newPassword}
                             onChange={handleChange}
@@ -152,7 +140,7 @@ const UpdatePasswordPage = () => {
                         />
 
                         <PasswordInput
-                            label="Confirm New Password"
+                            placeholder="Confirm New Password"
                             name="confirmPassword"
                             value={formData.confirmPassword}
                             onChange={handleChange}
@@ -163,9 +151,7 @@ const UpdatePasswordPage = () => {
                         />
                     </div>
 
-                    {error && (
-                        <div className="alert alert-error text-sm">{error}</div>
-                    )}
+                    {error && <div className="text-error text-sm">{error}</div>}
 
                     {/* ACTIONS */}
                     <div className="flex justify-end gap-4 pt-6 border-t border-base-300">

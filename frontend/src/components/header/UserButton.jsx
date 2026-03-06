@@ -6,6 +6,7 @@ import {
     ShoppingBag,
     UserCircle,
     X,
+    MessageSquareText,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -52,6 +53,11 @@ const UserButton = () => {
             label: "Sales",
             icon: <ShoppingBag className="h-5 w-5" />,
             onClick: () => navigate("/sales"),
+        },
+        {
+            label: "Feedback",
+            icon: <MessageSquareText className="h-5 w-5" />,
+            onClick: () => navigate("/feedback"),
         },
         {
             label: "Settings",
