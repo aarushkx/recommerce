@@ -14,16 +14,15 @@ import fs from "fs";
 
 export const postReview = async (req, res) => {
     const imageLocalPath = req.file?.path;
+
     try {
         const userId = req.user._id;
-        const { bookingId } = req.params;
-        const { message } = req.body;
-        let { rating } = req.body;
+        const { sellerId } = req.params;
+        let { message, rating } = req.body;
 
         // Validate booking ID
-        if (!mongoose.Types.ObjectId.isValid(bookingId)) {
-            return res.status(400).json({ message: "Invalid booking ID" });
-        }
+        if (!mongoose.Types.ObjectId.isValid(sellerId))
+            return res.status(400).json({ message: "Invalid seller ID" });
 
         // Field validation
         // Message
@@ -32,15 +31,17 @@ export const postReview = async (req, res) => {
                 .status(400)
                 .json({ message: "Review message is required" });
 
+        message = message.trim();
+
         if (
-            message.trim().length < MIN_MESSAGE_LEN ||
-            message.trim().length > MAX_MESSAGE_LEN
+            message.length < MIN_MESSAGE_LEN ||
+            message.length > MAX_MESSAGE_LEN
         )
             return res.status(400).json({
                 message: `Review must be between ${MIN_MESSAGE_LEN} to ${MAX_MESSAGE_LEN} characters`,
             });
 
-        // Ratings
+        // Rating
         rating = Number(rating);
         if (isNaN(rating))
             return res.status(400).json({ message: "Rating is required" });
@@ -50,41 +51,35 @@ export const postReview = async (req, res) => {
                 message: `Ratings must be between ${MIN_RATING} and ${MAX_RATING}`,
             });
 
-        // Find booking
-        const booking = await Booking.findById(bookingId);
-        if (!booking)
-            return res.status(404).json({ message: "Booking not found" });
-
-        // Check if seller exists
-        const seller = await User.findById(booking.seller);
-        if (!seller)
-            return res.status(404).json({ message: "Seller not found" });
-
-        // Prevent seller from rating themself
-        if (userId.toString() === seller._id.toString())
+        // Prevent seller from reviewing themself
+        if (sellerId === userId.toString())
             return res.status(400).json({
                 message: "You cannot post a review for yourself",
             });
 
-        // Prevent unauthorized reviews
-        const isAllowed = await Booking.findOne({
-            seller: seller,
+        // Check if seller exists
+        const seller = await User.findById(sellerId).select("_id");
+        if (!seller)
+            return res.status(404).json({ message: "Seller not found" });
+
+        // Check if user has ever had a booking with this seller
+        const existingBooking = await Booking.exists({
+            seller: sellerId,
             buyer: userId,
         });
-        if (!isAllowed)
+        if (!existingBooking)
             return res.status(403).json({
-                message: "You are not authorized to review this product",
+                message: "You cannot review a seller you never interacted with",
             });
 
-        // Prevent duplicate reviews
-        const existingReview = await Review.findOne({
+        // Prevent duplicate review per seller
+        const existingReview = await Review.exists({
             reviewer: userId,
-            booking: booking._id,
+            seller: sellerId,
         });
         if (existingReview)
             return res.status(400).json({
-                message:
-                    "You have already posted a review for this product of this seller",
+                message: "You have already posted a review for this seller",
             });
 
         // Image
@@ -92,7 +87,7 @@ export const postReview = async (req, res) => {
         if (imageLocalPath) {
             const uploadedImage = await uploadOnCloudinary(
                 imageLocalPath,
-                `${APP_NAME.toLowerCase()}/avatars`,
+                `${APP_NAME.toLowerCase()}/reviews`,
             );
 
             if (!uploadedImage?.secure_url)
@@ -107,8 +102,7 @@ export const postReview = async (req, res) => {
         // Create new review
         const review = await Review.create({
             reviewer: userId,
-            seller: booking.seller,
-            booking: bookingId,
+            seller: sellerId,
             image,
             message,
             rating,
@@ -117,7 +111,7 @@ export const postReview = async (req, res) => {
         // Re-calculate seller's average rating
         const result = await Review.aggregate([
             {
-                $match: { seller: booking.seller },
+                $match: { seller: sellerId },
             },
             {
                 $group: {
@@ -130,11 +124,9 @@ export const postReview = async (req, res) => {
         const avgRating =
             result.length > 0 ? Number(result[0].avgRating.toFixed(1)) : 0;
 
-        await User.findByIdAndUpdate(seller._id, {
-            rating: avgRating,
-        });
+        await User.findByIdAndUpdate(sellerId, { rating: avgRating });
 
-        return res.status(201).json({ review });
+        return res.status(201).json(review);
     } catch (error) {
         console.log("ERROR :: CONTROLLER :: postReview ::", error.message);
         return res.status(500).json({ message: "Internal Server Error" });
@@ -150,19 +142,13 @@ export const getAllReviews = async (req, res) => {
 
         // Get all reviews written by user
         const reviews = await Review.find({ reviewer: reviewerId })
-            .sort({
-                createdAt: -1,
-            })
-            .populate("seller", "name avatar rating")
+            .sort({ createdAt: -1 })
             .populate({
-                path: "booking",
-                populate: {
-                    path: "product",
-                    select: "title",
-                },
+                path: "seller",
+                select: "name email avatar rating",
             })
             .lean();
-        return res.status(200).json({ reviews });
+        return res.status(200).json(reviews);
     } catch (error) {
         console.log("ERROR :: CONTROLLER :: getAllReviews ::", error.message);
         return res.status(500).json({ message: "Internal Server Error" });
@@ -174,28 +160,20 @@ export const getSingleReview = async (req, res) => {
         const { reviewId } = req.params;
 
         // Validate review ID
-        if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+        if (!mongoose.Types.ObjectId.isValid(reviewId))
             return res.status(400).json({ message: "Invalid review ID" });
-        }
 
         // Get single review
         const review = await Review.findById(reviewId)
-            .populate("reviewer", "name avatar")
-            .populate("seller", "name avatar rating")
-            .populate({
-                path: "booking",
-                populate: {
-                    path: "product",
-                    select: "title",
-                },
-            })
+            .populate({ path: "reviewer", select: "name avatar" })
+            .populate({ path: "seller", select: "name email avatar rating" })
             .lean();
 
         // Check if review exists
         if (!review)
             return res.status(404).json({ message: "Review not found" });
 
-        return res.status(200).json({ review });
+        return res.status(200).json(review);
     } catch (error) {
         console.log("ERROR :: CONTROLLER :: getSingleReview ::", error.message);
         return res.status(500).json({ message: "Internal Server Error" });
@@ -208,9 +186,8 @@ export const deleteReview = async (req, res) => {
         const { reviewId } = req.params;
 
         // Validate review ID
-        if (!mongoose.Types.ObjectId.isValid(reviewId)) {
+        if (!mongoose.Types.ObjectId.isValid(reviewId))
             return res.status(400).json({ message: "Invalid review ID" });
-        }
 
         // Find review
         const review = await Review.findById(reviewId);
@@ -224,9 +201,7 @@ export const deleteReview = async (req, res) => {
             });
 
         // Delete image from Cloudinary
-        if (review.image?.public_id) {
-            await deleteFromCloudinary(review.image);
-        }
+        if (review.image?.public_id) await deleteFromCloudinary(review.image);
 
         const sellerId = review.seller;
 
