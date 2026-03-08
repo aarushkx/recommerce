@@ -186,7 +186,7 @@ const UpdateProfilePage = () => {
                             </label>
                         </div>
                         <p className="text-xs text-base-content/60">
-                            Click to change your avatar (max 2MB)
+                            Click to change your avatar
                         </p>
                     </div>
 
