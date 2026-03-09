@@ -11,6 +11,7 @@ import {
     UserFavoritesPage,
     AddProductPage,
     UserFeedbackPage,
+    UserBookingsPage,
 } from "../pages";
 
 export const routes = [
@@ -75,6 +76,11 @@ export const routes = [
     {
         path: "/feedback",
         element: <UserFeedbackPage />,
+        protected: true,
+    },
+    {
+        path: "/bookings",
+        element: <UserBookingsPage />,
         protected: true,
     },
 ];
