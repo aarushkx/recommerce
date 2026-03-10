@@ -118,9 +118,7 @@ const UserAccountPage = () => {
                             <span className="text-sm">
                                 You've been a member since{" "}
                                 <span className="font-medium text-base-content">
-                                    {moment(user.createdAt).format(
-                                        "Do MMMM, YYYY",
-                                    )}
+                                    {moment(user.createdAt).format("ll")}
                                 </span>
                             </span>
                         </div>
@@ -206,15 +204,17 @@ const UserAccountPage = () => {
                 <div className="divider my-8" />
 
                 {/* DANGER ZONE */}
-                <div className="space-y-6 ">
-                    <h2 className="text-xl font-semibold text-error">
-                        Danger Zone
-                    </h2>
+                <div className="space-y-6">
+                    <div className="space-y-2">
+                        <h2 className="text-xl font-semibold text-error">
+                            Danger Zone
+                        </h2>
 
-                    <p className="text-sm text-base-content/70">
-                        Permanently delete your account and all associated data.
-                        This action cannot be undone.
-                    </p>
+                        <p className="text-sm text-base-content/70">
+                            Permanently delete your account and all associated
+                            data. This action cannot be undone.
+                        </p>
+                    </div>
 
                     <button
                         className="btn btn-error w-fit"

@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addToFavorites } from "../../api/user.api";
+import { createBooking } from "../../api/bookings.api";
 import { useFavorites, useAuth } from "../../hooks";
 
 const ProductInfo = ({ product }) => {
@@ -37,8 +38,20 @@ const ProductInfo = ({ product }) => {
         },
     });
 
+    const bookingMutation = useMutation({
+        mutationFn: createBooking,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["products"] });
+            queryClient.invalidateQueries({ queryKey: ["product", _id] });
+        },
+    });
+
     const handleAddFavorite = () => {
         mutation.mutate(_id);
+    };
+
+    const handleBooking = () => {
+        bookingMutation.mutate(_id);
     };
 
     return (
@@ -109,9 +122,30 @@ const ProductInfo = ({ product }) => {
 
             {/* Actions */}
             <div className="mt-8 flex flex-col gap-3">
-                <button className="btn btn-primary gap-2" disabled={isOwner}>
+                {/* <button className="btn btn-primary gap-2" disabled={isOwner}>
                     <CalendarCheck size={18} />
                     Book Now
+                </button> */}
+                <button
+                    className="btn btn-primary gap-2"
+                    disabled={
+                        isOwner ||
+                        bookingMutation.isPending ||
+                        status !== "available"
+                    }
+                    onClick={handleBooking}
+                >
+                    {bookingMutation.isPending ? (
+                        <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Booking...
+                        </>
+                    ) : (
+                        <>
+                            <CalendarCheck size={18} />
+                            Book Now
+                        </>
+                    )}
                 </button>
 
                 <button
