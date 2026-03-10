@@ -1,3 +1,6 @@
 import { api } from "./axios";
 
-export const postFeedback = (data) => api.post("/feedback",data);
+export const postFeedback = async (formData) => {
+    const { data } = await api.post("/feedback", formData);
+    return data;
+};

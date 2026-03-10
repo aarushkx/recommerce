@@ -1,8 +1,14 @@
 import { api } from "./axios";
 
-export const updateProfile = (data) => api.patch("/user/update-profile", data);
+export const updateProfile = async (formData) => {
+    const { data } = await api.patch("/user/update-profile", formData);
+    return data;
+};
 
-export const deleteAccount = () => api.delete("/user/delete-account");
+export const deleteAccount = async () => {
+    const { data } = await api.delete("/user/delete-account");
+    return data;
+};
 
 export const addToFavorites = async (productId) => {
     const { data } = await api.post(`/user/favorites/${productId}`);
