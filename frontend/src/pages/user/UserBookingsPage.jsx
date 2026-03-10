@@ -3,7 +3,6 @@ import { cancelBooking } from "../../api/bookings.api";
 import { useUserBookings } from "../../hooks";
 import { Loader2, Package } from "lucide-react";
 import BookingCard from "../../components/booking/BookingCard";
-
 const UserBookingsPage = () => {
     const queryClient = useQueryClient();
     const { data: bookings, isLoading } = useUserBookings();
@@ -21,9 +20,8 @@ const UserBookingsPage = () => {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center py-24 gap-2 text-base-content/60">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span className="text-sm">Loading bookings...</span>
+            <div className="min-h-screen flex items-center justify-center">
+                <Loader2 className="w-6 h-6 animate-spin text-primary" />
             </div>
         );
     }
@@ -46,7 +44,7 @@ const UserBookingsPage = () => {
                 </div>
             ) : (
                 <div className="space-y-6">
-                    {bookings?.map((booking) => (
+                    {bookings.map((booking) => (
                         <BookingCard
                             key={booking._id}
                             booking={booking}
