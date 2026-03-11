@@ -9,7 +9,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addToFavorites } from "../../api/user.api";
 import { createBooking } from "../../api/bookings.api";
-import { useFavorites, useAuth } from "../../hooks";
+import { useFavorites, useAuth, useUserBookings } from "../../hooks";
 
 const ProductInfo = ({ product }) => {
     const {
@@ -27,9 +27,15 @@ const ProductInfo = ({ product }) => {
     const queryClient = useQueryClient();
     const { data: favorites } = useFavorites();
     const { data: currentUser } = useAuth();
+    const { data: userBookings } = useUserBookings();
 
     const isFavorite = favorites?.some((fav) => fav._id === _id);
     const isOwner = currentUser?._id === seller?._id;
+    const isBooked = userBookings?.some(
+        (booking) =>
+            booking.product?._id === _id &&
+            booking.buyer?._id === currentUser?._id,
+    );
 
     const mutation = useMutation({
         mutationFn: addToFavorites,
@@ -150,7 +156,13 @@ const ProductInfo = ({ product }) => {
 
                 <button
                     className="btn btn-outline gap-2"
-                    disabled={isOwner || isFavorite || mutation.isPending}
+                    disabled={
+                        isOwner ||
+                        isFavorite ||
+                        bookingMutation.isPending ||
+                        status !== "available" ||
+                        isBooked
+                    }
                     onClick={handleAddFavorite}
                 >
                     {mutation.isPending ? (
