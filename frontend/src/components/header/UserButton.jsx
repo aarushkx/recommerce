@@ -48,7 +48,7 @@ const UserButton = () => {
         {
             label: "Add Product",
             icon: <Plus className="h-5 w-5" />,
-            onClick: () => navigate("/create-product")
+            onClick: () => navigate("/create-product"),
         },
         {
             label: "Bookings",
@@ -56,8 +56,13 @@ const UserButton = () => {
             onClick: () => navigate("/bookings"),
         },
         {
-            label: "Sales",
+            label: "Orders",
             icon: <ShoppingBag className="h-5 w-5" />,
+            onClick: () => navigate("/orders"),
+        },
+        {
+            label: "Sales",
+            icon: <ChartLine className="h-5 w-5" />,
             onClick: () => navigate("/sales"),
         },
         {

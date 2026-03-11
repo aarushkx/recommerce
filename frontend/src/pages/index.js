@@ -11,6 +11,8 @@ import UserFavoritesPage from "./user/UserFavoritesPage";
 import AddProductPage from "./product/AddProductPage";
 import UserFeedbackPage from "./user/UserFeedbackPage";
 import UserBookingsPage from "./user/UserBookingsPage";
+import OrdersPage from "./commerce/OrdersPage";
+import SalesPage from "./commerce/SalesPage";
 
 export {
     LandingPage,
@@ -26,4 +28,6 @@ export {
     AddProductPage,
     UserFeedbackPage,
     UserBookingsPage,
+    OrdersPage,
+    SalesPage,
 };

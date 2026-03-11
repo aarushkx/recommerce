@@ -4,6 +4,7 @@ import useProduct from "./useProduct";
 import useUserProducts from "./useUserProducts";
 import useFavorites from "./useFavorites";
 import useUserBookings from "./useUserBookings";
+import useOrders from "./useOrders";
 
 export {
     useAuth,
@@ -12,4 +13,5 @@ export {
     useUserProducts,
     useFavorites,
     useUserBookings,
+    useOrders,
 };
