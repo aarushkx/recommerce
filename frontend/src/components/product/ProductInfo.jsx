@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addToFavorites } from "../../api/user.api";
 import { createBooking } from "../../api/bookings.api";
 import { useFavorites, useAuth, useUserBookings } from "../../hooks";
+import { useNavigate } from "react-router-dom";
 
 const ProductInfo = ({ product }) => {
     const {
@@ -60,6 +61,7 @@ const ProductInfo = ({ product }) => {
         bookingMutation.mutate(_id);
     };
 
+    const navigate = useNavigate();
     return (
         <div className="flex flex-col">
             {/* Header */}
@@ -103,7 +105,10 @@ const ProductInfo = ({ product }) => {
                         <User size={14} className="text-base-content/50" />
                         <span>
                             Listed by{" "}
-                            <span className="font-semibold text-base-content">
+                            <span
+                                className="font-semibold text-base-content"
+                                onClick={() => navigate(`/user/${seller?._id}`)}
+                            >
                                 {seller?.name}
                             </span>
                         </span>
