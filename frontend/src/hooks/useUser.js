@@ -9,8 +9,6 @@ const useUser = (userId) => {
         queryFn: () => getUser(userId),
         enabled: !!userId,
 
-        staleTime: 1000 * 60 * 5, // 5 minutes
-
         initialData: () => {
             return queryClient.getQueryData(["user", userId]);
         },
