@@ -2,12 +2,20 @@ import Avatar from "../../components/user/Avatar";
 import UserInfo from "../../components/user/UserInfo";
 import UserProductGrid from "../../components/user/UserProductGrid";
 import { Mail, Loader2 } from "lucide-react";
-import { useAuth } from "../../hooks";
-import { useNavigate } from "react-router-dom";
+import { useUser, useAuth } from "../../hooks";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+const UserPublicProfilePage = () => {
+    const { userId } = useParams();
 
-const UserProfilePage = () => {
-    const { data: user, isLoading } = useAuth();
     const navigate = useNavigate();
+    const { data: currentUser } = useAuth();
+    useEffect(() => {
+        if (currentUser && currentUser._id === userId) {
+            navigate("/profile"); // redirect to own profile
+        }
+    }, [currentUser, userId, navigate]);
+    const { data: user, isLoading } = useUser(userId);
 
     if (isLoading) {
         return (
@@ -41,9 +49,9 @@ const UserProfilePage = () => {
                         </div>
                         <button
                             className="btn btn-outline btn-primary btn-sm"
-                            onClick={() => navigate("/update-profile")}
+                            onClick={() => navigate(`/reviews/${userId}`)}
                         >
-                            Update Profile
+                            Post Review
                         </button>
                     </div>
 
@@ -57,10 +65,10 @@ const UserProfilePage = () => {
             {/* Products Section */}
             <div className="max-w-4xl mx-auto px-4 pb-16">
                 <div className="divider my-8" />
-                <UserProductGrid userId={user?._id} />
+                <UserProductGrid userId={userId} />
             </div>
         </div>
     );
 };
 
-export default UserProfilePage;
+export default UserPublicProfilePage;

@@ -24,3 +24,8 @@ export const removeFromFavorites = async (productId) => {
     const { data } = await api.delete(`/user/favorites/${productId}`);
     return data;
 };
+
+export const getUser = async (userId) => {
+    const {data} = await api.get(`/user/${userId}`);
+    return data;
+}

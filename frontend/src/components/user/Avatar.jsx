@@ -1,19 +1,7 @@
 import { User } from "lucide-react";
 import { useAuth } from "../../hooks";
 
-const Avatar = ({ size = "w-24" }) => {
-    const { data: user, isLoading } = useAuth();
-
-    if (isLoading) {
-        return (
-            <div className="avatar placeholder">
-                <div
-                    className={`${size} rounded-full bg-base-300 animate-pulse`}
-                />
-            </div>
-        );
-    }
-
+const Avatar = ({ size = "w-24", user }) => {
     if (!user) return null;
 
     const getInitials = (name) => {
