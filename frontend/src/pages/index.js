@@ -13,6 +13,7 @@ import UserFeedbackPage from "./user/UserFeedbackPage";
 import UserBookingsPage from "./user/UserBookingsPage";
 import OrdersPage from "./commerce/OrdersPage";
 import SalesPage from "./commerce/SalesPage";
+import UserPublicProfilePage from "./profile/UserPublicProfilePage";
 
 export {
     LandingPage,
@@ -30,4 +31,5 @@ export {
     UserBookingsPage,
     OrdersPage,
     SalesPage,
+    UserPublicProfilePage,
 };

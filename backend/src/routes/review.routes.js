@@ -11,7 +11,7 @@ import { upload } from "../middlewares/multer.middleware.js";
 const router = express.Router();
 
 //POST
-router.post("/:bookingId", protect, upload.single("image"), postReview);
+router.post("/:sellerId", protect, upload.single("image"), postReview);
 
 //GET
 router.get("/:buyerId", protect, getAllReviews);

@@ -16,13 +16,11 @@ const BookingCard = ({ booking, onCancel, cancelling }) => {
                     className="w-16 h-16 object-cover rounded-lg"
                 />
 
-                <div className="flex-1">
-                    <a
-                        className="font-bold cursor-pointer"
-                        onClick={() => navigate(`/products/${product._id}`)}
-                    >
-                        {product?.title}
-                    </a>
+                <div
+                    className="flex-1"
+                    onClick={() => navigate(`/products/${product._id}`)}
+                >
+                    <p className="font-bold cursor-pointer">{product?.title}</p>
 
                     <div className="flex items-center gap-2 text-sm text-base-content/60">
                         ₹{product?.price}
@@ -32,12 +30,12 @@ const BookingCard = ({ booking, onCancel, cancelling }) => {
 
             <div className="flex items-center gap-2 text-sm text-base-content/70">
                 <User className="w-4 h-4 text-primary" />
-                <a
+                <p
                     className="cursor-pointer"
                     onClick={() => navigate(`/seller/${seller._id}`)}
                 >
                     {seller?.name}
-                </a>
+                </p>
             </div>
 
             <div className="flex items-center gap-2 text-sm text-base-content/70">

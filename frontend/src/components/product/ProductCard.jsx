@@ -56,7 +56,10 @@ const ProductCard = ({ product }) => {
                         <User size={14} />
                         <span className="text-[11px] font-medium truncate">
                             Listed by:{" "}
-                            <span className="text-base-content font-semibold">
+                            <span
+                                className="text-base-content font-semibold cursor-pointer"
+                                onClick={() => navigate(`/user/${seller._id}`)}
+                            >
                                 {seller?.name || "Unknown"}
                             </span>
                         </span>
