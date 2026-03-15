@@ -112,7 +112,7 @@ export const getMySales = async (req, res) => {
         const bookings = await Booking.find({ seller: sellerId })
             .populate({
                 path: "product",
-                select: "title price images status category condition",
+                select: "title price images status category condition location",
             })
             .populate({
                 path: "buyer",

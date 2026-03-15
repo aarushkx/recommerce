@@ -115,15 +115,6 @@ const BookingActionPage = () => {
 
                 {/* Buyer and Status Section */}
                 <div className="p-6 bg-base-200/30 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* <div>
-                        <h3 className="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-2">
-                            Customer Details
-                        </h3>
-                        <p className="font-medium">{buyer?.name}</p>
-                        <p className="text-sm text-base-content/60">
-                            {buyer?.email}
-                        </p>
-                    </div> */}
                     <div>
                         <h3 className="text-xs font-semibold uppercase tracking-wider text-base-content/50 mb-2">
                             Customer Details
