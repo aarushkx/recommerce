@@ -14,7 +14,8 @@ import {
     UserBookingsPage,
     OrdersPage,
     SalesPage,
-    UserPublicProfilePage
+    UserPublicProfilePage,
+    BookingActionPage,
 } from "../pages";
 
 export const routes = [
@@ -99,6 +100,11 @@ export const routes = [
     {
         path: "/user/:userId",
         element: <UserPublicProfilePage />,
+        protected: true,
+    },
+    {
+        path: "/booking/action/:bookingId",
+        element: <BookingActionPage />,
         protected: true,
     },
 ];

@@ -7,7 +7,7 @@ const OrderCard = ({ booking }) => {
 
     return (
         <Link
-            to={`/products/${product?._id}`}
+            to={`/booking/action/${booking._id}`}
             className="p-4 md:p-6 flex flex-col md:flex-row gap-4 hover:bg-base-200/50 transition-colors"
         >
             {/* Product Image */}
@@ -45,11 +45,16 @@ const OrderCard = ({ booking }) => {
                         </p>
 
                         {product?.location && (
-                            <p className="text-xs flex items-center gap-1 text-base-content/50 mt-1">
-                                <MapPin className="h-3 w-3" />
-                                {product.location.city},{" "}
-                                {product.location.state}
-                            </p>
+                            <div className="flex items-center gap-2 text-sm text-base-content/70">
+                                <MapPin className="h-4 w-4" />
+                                <span>
+                                    {product.location.area},{" "}
+                                    {product.location.city},{" "}
+                                    {product.location.state} -{" "}
+                                    {product.location.pincode},{" "}
+                                    {product.location.country}
+                                </span>
+                            </div>
                         )}
                     </div>
                 </div>

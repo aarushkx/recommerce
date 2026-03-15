@@ -10,6 +10,11 @@ export const getMyBookings = async () => {
     return data;
 };
 
+export const getSingleBooking = async (bookingId) => {
+    const { data } = await api.get(`/bookings/${bookingId}`);
+    return data;
+};
+
 export const getMySales = async () => {
     const { data } = await api.get("/bookings/my-sales");
     return data;

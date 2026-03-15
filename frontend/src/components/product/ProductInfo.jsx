@@ -133,10 +133,6 @@ const ProductInfo = ({ product }) => {
 
             {/* Actions */}
             <div className="mt-8 flex flex-col gap-3">
-                {/* <button className="btn btn-primary gap-2" disabled={isOwner}>
-                    <CalendarCheck size={18} />
-                    Book Now
-                </button> */}
                 <button
                     className="btn btn-primary gap-2"
                     disabled={
