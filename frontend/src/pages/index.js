@@ -14,6 +14,7 @@ import UserBookingsPage from "./user/UserBookingsPage";
 import OrdersPage from "./commerce/OrdersPage";
 import SalesPage from "./commerce/SalesPage";
 import UserPublicProfilePage from "./profile/UserPublicProfilePage";
+import BookingActionPage from "./commerce/BookingActionPage";
 
 export {
     LandingPage,
@@ -32,4 +33,5 @@ export {
     OrdersPage,
     SalesPage,
     UserPublicProfilePage,
+    BookingActionPage,
 };

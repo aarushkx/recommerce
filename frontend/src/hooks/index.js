@@ -5,7 +5,8 @@ import useUserProducts from "./useUserProducts";
 import useFavorites from "./useFavorites";
 import useUserBookings from "./useUserBookings";
 import useOrders from "./useOrders";
-import useUser from "./useUser"
+import useUser from "./useUser";
+import useBooking from "./useBooking";
 import useSellerReviews from "./useSellerReviews";
 
 export {
@@ -13,9 +14,10 @@ export {
     useProducts,
     useProduct,
     useUserProducts,
+    useOrders,
     useFavorites,
     useUserBookings,
-    useOrders,
     useUser,
-    useSellerReviews
+    useSellerReviews,
+    useBooking,
 };

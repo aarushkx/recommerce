@@ -26,6 +26,6 @@ export const removeFromFavorites = async (productId) => {
 };
 
 export const getUser = async (userId) => {
-    const {data} = await api.get(`/user/${userId}`);
+    const { data } = await api.get(`/user/${userId}`);
     return data;
-}
+};
