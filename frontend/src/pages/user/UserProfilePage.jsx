@@ -4,6 +4,7 @@ import UserProductGrid from "../../components/user/UserProductGrid";
 import { Mail, Loader2 } from "lucide-react";
 import { useAuth } from "../../hooks";
 import { useNavigate } from "react-router-dom";
+import ReviewSection from "../../components/user/ReviewsSection";
 
 const UserProfilePage = () => {
     const { data: user, isLoading } = useAuth();
@@ -58,6 +59,13 @@ const UserProfilePage = () => {
             <div className="max-w-4xl mx-auto px-4 pb-16">
                 <div className="divider my-8" />
                 <UserProductGrid userId={user?._id} />
+            </div>
+
+            
+            {/* Reviews Section */}
+            <div className="max-w-4xl mx-auto px-4 pb-16">
+                <div className="divider my-8" />
+                <ReviewSection userId={user?._id} />
             </div>
         </div>
     );
