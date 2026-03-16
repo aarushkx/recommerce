@@ -6,8 +6,8 @@ const useAuth = () => {
         queryKey: ["user"],
         queryFn: async () => {
             try {
-                const { data } = await getCurrentUser();
-                return data;
+                const user = await getCurrentUser();
+                return user;
             } catch (error) {
                 if (error.response?.status === 401) return null;
                 throw error;
