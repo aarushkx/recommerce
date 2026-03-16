@@ -1,4 +1,4 @@
-import { Loader2, Star, MessageSquare } from "lucide-react";
+import { Loader2, MessageSquare } from "lucide-react";
 import moment from "moment";
 import { useSellerReviews } from "../../hooks";
 import Avatar from "../user/Avatar";
@@ -29,7 +29,7 @@ const ReviewCard = ({ review }) => {
                 </div>
 
                 <span className="text-xs text-base-content/50">
-                    {moment(review.createdAt).format("Do MMM YYYY")}
+                    {moment(review.createdAt).format("lll")}
                 </span>
             </div>
 

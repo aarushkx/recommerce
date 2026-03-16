@@ -1,11 +1,13 @@
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useUser, useAuth } from "../../hooks";
+import { Mail, Loader2 } from "lucide-react";
 import Avatar from "../../components/user/Avatar";
 import UserInfo from "../../components/user/UserInfo";
 import UserProductGrid from "../../components/user/UserProductGrid";
-import { Mail, Loader2 } from "lucide-react";
-import { useUser, useAuth } from "../../hooks";
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
 import ReviewSection from "../../components/user/ReviewsSection";
+import AddReviewButton from "../../components/button/AddReviewButton";
+
 const UserPublicProfilePage = () => {
     const { userId } = useParams();
 
@@ -20,8 +22,9 @@ const UserPublicProfilePage = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            <div className="flex items-center justify-center py-24 gap-2 text-base-content/60">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="text-sm">Loading profile...</span>
             </div>
         );
     }
@@ -48,12 +51,7 @@ const UserPublicProfilePage = () => {
                                 </p>
                             </div>
                         </div>
-                        <button
-                            className="btn btn-outline btn-primary btn-sm"
-                            onClick={() => navigate(`/reviews/${userId}`)}
-                        >
-                            Post Review
-                        </button>
+                        <AddReviewButton userId={userId} />
                     </div>
 
                     {/* Right Side */}
@@ -70,10 +68,10 @@ const UserPublicProfilePage = () => {
             </div>
 
             {/* Reviews Section */}
-                        <div className="max-w-4xl mx-auto px-4 pb-16">
-                            <div className="divider my-8" />
-                            <ReviewSection userId={userId} />
-                        </div>
+            <div className="max-w-4xl mx-auto px-4 pb-16">
+                <div className="divider my-8" />
+                <ReviewSection userId={userId} />
+            </div>
         </div>
     );
 };

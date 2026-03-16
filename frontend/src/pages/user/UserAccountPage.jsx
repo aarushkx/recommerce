@@ -1,7 +1,4 @@
-import { useState } from "react";
 import { useAuth } from "../../hooks";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteAccount } from "../../api/user.api";
 import {
     Loader2,
     User,
@@ -17,6 +14,7 @@ import {
     HandCoins,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import DeleteAccountButton from "../../components/button/DeleteAccountButton";
 import moment from "moment";
 
 const InfoRow = ({ icon: Icon, label, value }) => {
@@ -37,18 +35,7 @@ const InfoRow = ({ icon: Icon, label, value }) => {
 
 const UserAccountPage = () => {
     const { data: user, isLoading } = useAuth();
-    const queryClient = useQueryClient();
     const navigate = useNavigate();
-
-    const [showConfirm, setShowConfirm] = useState(false);
-
-    const deleteMutation = useMutation({
-        mutationFn: deleteAccount,
-        onSuccess: () => {
-            queryClient.clear();
-            navigate("/login");
-        },
-    });
 
     if (isLoading) {
         return (
@@ -73,7 +60,7 @@ const UserAccountPage = () => {
     return (
         <div className="min-h-screen max-w-4xl mx-auto px-4 py-16">
             <div>
-                {/* HEADER */}
+                {/* Header */}
                 <div className="text-center space-y-2">
                     <h1 className="text-3xl font-bold">Account</h1>
                     <p className="text-base-content/60 text-sm">
@@ -83,7 +70,7 @@ const UserAccountPage = () => {
 
                 <div className="divider my-8" />
 
-                {/* ACCOUNT INFORMATION */}
+                {/* Account Information */}
                 <div className="space-y-8">
                     <h2 className="text-xl font-semibold">
                         Account Information
@@ -127,7 +114,7 @@ const UserAccountPage = () => {
 
                 <div className="divider my-8" />
 
-                {/* ACTIVITY SUMMARY */}
+                {/* Activity Summary */}
                 <div className="space-y-8">
                     <h2 className="text-xl font-semibold">Activity Summary</h2>
 
@@ -188,7 +175,7 @@ const UserAccountPage = () => {
 
                 <div className="divider my-8" />
 
-                {/* SECURITY */}
+                {/* Security */}
                 <div className="space-y-6">
                     <h2 className="text-xl font-semibold">Security</h2>
 
@@ -203,7 +190,7 @@ const UserAccountPage = () => {
 
                 <div className="divider my-8" />
 
-                {/* DANGER ZONE */}
+                {/* Danger Zone */}
                 <div className="space-y-6">
                     <div className="space-y-2">
                         <h2 className="text-xl font-semibold text-error">
@@ -216,49 +203,9 @@ const UserAccountPage = () => {
                         </p>
                     </div>
 
-                    <button
-                        className="btn btn-error w-fit"
-                        onClick={() => setShowConfirm(true)}
-                    >
-                        Delete Account
-                    </button>
+                    <DeleteAccountButton />
                 </div>
             </div>
-
-            {/* CONFIRM DELETE MODAL */}
-            {showConfirm && (
-                <div className="modal modal-open">
-                    <div className="modal-box space-y-4">
-                        <h3 className="font-bold text-lg text-error">
-                            Confirm Account Deletion
-                        </h3>
-                        <p className="text-sm">
-                            Are you sure you want to delete your account? This
-                            action cannot be undone.
-                        </p>
-
-                        <div className="modal-action">
-                            <button
-                                className="btn"
-                                onClick={() => setShowConfirm(false)}
-                            >
-                                Cancel
-                            </button>
-
-                            <button
-                                className="btn btn-error"
-                                onClick={() => deleteMutation.mutate()}
-                                disabled={deleteMutation.isPending}
-                            >
-                                {deleteMutation.isPending && (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                )}
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
