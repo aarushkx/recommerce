@@ -5,6 +5,7 @@ import { Mail, Loader2 } from "lucide-react";
 import { useUser, useAuth } from "../../hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
+import ReviewSection from "../../components/user/ReviewsSection";
 const UserPublicProfilePage = () => {
     const { userId } = useParams();
 
@@ -67,6 +68,12 @@ const UserPublicProfilePage = () => {
                 <div className="divider my-8" />
                 <UserProductGrid userId={userId} />
             </div>
+
+            {/* Reviews Section */}
+                        <div className="max-w-4xl mx-auto px-4 pb-16">
+                            <div className="divider my-8" />
+                            <ReviewSection userId={userId} />
+                        </div>
         </div>
     );
 };

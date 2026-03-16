@@ -7,6 +7,7 @@ import useUserBookings from "./useUserBookings";
 import useOrders from "./useOrders";
 import useUser from "./useUser";
 import useBooking from "./useBooking";
+import useSellerReviews from "./useSellerReviews";
 
 export {
     useAuth,
@@ -17,5 +18,6 @@ export {
     useFavorites,
     useUserBookings,
     useUser,
+    useSellerReviews,
     useBooking,
 };
