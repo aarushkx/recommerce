@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MapPin, User, ArrowUpRight } from "lucide-react";
 
 const ProductCard = ({ product }) => {
@@ -56,12 +56,12 @@ const ProductCard = ({ product }) => {
                         <User size={14} />
                         <span className="text-[11px] font-medium truncate">
                             Listed by:{" "}
-                            <span
-                                className="text-base-content font-semibold cursor-pointer"
-                                onClick={() => navigate(`/user/${seller._id}`)}
+                            <Link
+                                to={`/user/${seller._id}`}
+                                className="text-base-content font-semibold hover:underline"
                             >
                                 {seller?.name || "Unknown"}
-                            </span>
+                            </Link>
                         </span>
                     </div>
                 </div>

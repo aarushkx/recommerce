@@ -50,6 +50,7 @@ const ProductInfo = ({ product }) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
             queryClient.invalidateQueries({ queryKey: ["product", _id] });
+            queryClient.invalidateQueries({ queryKey: ["user-bookings"] });
         },
     });
 

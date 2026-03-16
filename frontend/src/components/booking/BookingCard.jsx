@@ -1,11 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { Loader2, Calendar, User } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { cancelBooking } from "../../api/bookings.api";
 import moment from "moment";
 
-const BookingCard = ({ booking, onCancel, cancelling }) => {
+const BookingCard = ({ booking }) => {
+    const queryClient = useQueryClient();
     const product = booking.product;
     const seller = booking.seller;
     const navigate = useNavigate();
+
+    const { mutate, isPending } = useMutation({
+        mutationFn: () => cancelBooking(booking._id),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["user-bookings"] });
+        },
+    });
 
     return (
         <div className="border border-base-300 rounded-xl p-5 space-y-4">
@@ -46,10 +56,10 @@ const BookingCard = ({ booking, onCancel, cancelling }) => {
             <div className="pt-2">
                 <button
                     className="btn btn-outline btn-error btn-sm"
-                    onClick={() => onCancel(booking._id)}
-                    disabled={cancelling}
+                    onClick={() => mutate()}
+                    disabled={isPending}
                 >
-                    {cancelling && <Loader2 className="w-4 h-4 animate-spin" />}
+                    {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
                     Cancel Booking
                 </button>
             </div>
