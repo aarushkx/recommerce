@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
 import { useProductFilters } from "../../hooks";
+import DebouncedInput from "../input/DebouncedInput";
 
 const SearchBar = () => {
     const {
@@ -10,12 +11,11 @@ const SearchBar = () => {
     return (
         <label className="input input-bordered flex items-center gap-2 w-full">
             <Search className="h-4 w-4 opacity-50 shrink-0" />
-            <input
-                type="text"
+            <DebouncedInput
                 className="grow without-ring"
                 placeholder="Search products..."
                 value={search || ""}
-                onChange={(e) => setFilter("search", e.target.value)}
+                onChange={(val) => setFilter("search", val)}
             />
         </label>
     );

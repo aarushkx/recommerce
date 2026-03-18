@@ -1,5 +1,6 @@
 import { SlidersHorizontal, X } from "lucide-react";
-import useProductFilters from "../../hooks/useProductFilters";
+import { useProductFilters } from "../../hooks";
+import DebouncedInput from "../input/DebouncedInput";
 
 const Filter = () => {
     const {
@@ -76,14 +77,12 @@ const Filter = () => {
                             <label className="label-text font-semibold mb-2 text-xs uppercase opacity-60">
                                 Search
                             </label>
-                            <input
+                            <DebouncedInput
                                 type="text"
                                 placeholder="Title or description..."
                                 className="input input-bordered w-full"
                                 value={search || ""}
-                                onChange={(e) =>
-                                    setFilter("search", e.target.value)
-                                }
+                                onChange={(val) => setFilter("search", val)}
                             />
                         </div>
 
@@ -93,13 +92,13 @@ const Filter = () => {
                                 <label className="label-text font-semibold mb-2 text-xs uppercase opacity-60">
                                     Category
                                 </label>
-                                <input
+                                <DebouncedInput
                                     type="text"
                                     placeholder="Electronics"
                                     className="input input-bordered w-full"
                                     value={category || ""}
-                                    onChange={(e) =>
-                                        setFilter("category", e.target.value)
+                                    onChange={(val) =>
+                                        setFilter("category", val)
                                     }
                                 />
                             </div>
@@ -107,14 +106,12 @@ const Filter = () => {
                                 <label className="label-text font-semibold mb-2 text-xs uppercase opacity-60">
                                     City
                                 </label>
-                                <input
+                                <DebouncedInput
                                     type="text"
                                     placeholder="Lucknow"
                                     className="input input-bordered w-full"
                                     value={city || ""}
-                                    onChange={(e) =>
-                                        setFilter("city", e.target.value)
-                                    }
+                                    onChange={(val) => setFilter("city", val)}
                                 />
                             </div>
                         </div>
