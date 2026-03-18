@@ -520,7 +520,21 @@ export const getAllProducts = async (req, res) => {
             .limit(limit)
             .lean();
 
-        return res.status(200).json(products);
+        const totalCount = await Product.countDocuments(filter);
+
+        const totalPages = Math.ceil(totalCount / limit);
+
+        return res.status(200).json({
+            products,
+            pagination: {
+                page,
+                limit,
+                totalCount,
+                totalPages,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1,
+            },
+        });
     } catch (error) {
         console.log("ERROR :: CONTROLLER :: getAllProducts ::", error.message);
         return res.status(500).json({ message: "Internal Server Error" });

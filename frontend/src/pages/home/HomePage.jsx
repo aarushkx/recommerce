@@ -1,12 +1,14 @@
 import { useProducts } from "../../hooks";
-import useProductFilterStore from "../../store/product-filter.store";
+import useProductFilters from "../../hooks/useProductFilters";
 import ProductCard from "../../components/product/ProductCard";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronRight, ChevronLeft } from "lucide-react";
 
 const HomePage = () => {
-    // Products
-    const { data: products, isLoading } = useProducts();
-    const { page, setPage } = useProductFilterStore();
+    const { data, isLoading } = useProducts();
+    const { filters, setPage } = useProductFilters();
+
+    const products = data?.products;
+    const pagination = data?.pagination;
 
     return (
         <div className="min-h-screen p-6 space-y-8">
@@ -26,22 +28,32 @@ const HomePage = () => {
                     </div>
 
                     {/* Pagination */}
-                    <div className="flex justify-center gap-4 pt-6">
-                        <button
-                            className="btn btn-outline"
-                            disabled={page === 1}
-                            onClick={() => setPage(page - 1)}
-                        >
-                            Previous
-                        </button>
+                    {pagination && (
+                        <div className="flex items-center justify-center gap-4 pt-6">
+                            <button
+                                className="btn btn-sm btn-outline flex items-center gap-1"
+                                disabled={!pagination.hasPrevPage}
+                                onClick={() => setPage(filters.page - 1)}
+                            >
+                                <ChevronLeft className="w-4 h-4" />
+                                Previous
+                            </button>
 
-                        <button
-                            className="btn btn-outline"
-                            onClick={() => setPage(page + 1)}
-                        >
-                            Next
-                        </button>
-                    </div>
+                            <span className="text-xs text-base-content/60">
+                                Page {pagination.page} of{" "}
+                                {pagination.totalPages}
+                            </span>
+
+                            <button
+                                className="btn btn-sm btn-outline flex items-center gap-1"
+                                disabled={!pagination.hasNextPage}
+                                onClick={() => setPage(filters.page + 1)}
+                            >
+                                Next
+                                <ChevronRight className="w-4 h-4" />
+                            </button>
+                        </div>
+                    )}
                 </>
             )}
         </div>

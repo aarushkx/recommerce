@@ -1,8 +1,11 @@
 import { Search } from "lucide-react";
-import useProductFilterStore from "../../store/product-filter.store";
+import { useProductFilters } from "../../hooks";
 
 const SearchBar = () => {
-    const { search, setFilter } = useProductFilterStore();
+    const {
+        filters: { search },
+        setFilter,
+    } = useProductFilters();
 
     return (
         <label className="input input-bordered flex items-center gap-2 w-full">

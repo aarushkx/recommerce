@@ -1,17 +1,12 @@
 import { SlidersHorizontal, X } from "lucide-react";
-import useProductFilterStore from "../../store/product-filter.store";
+import useProductFilters from "../../hooks/useProductFilters";
 
 const Filter = () => {
     const {
-        sort,
-        category,
-        city,
-        minPrice,
-        maxPrice,
-        search,
+        filters: { sort, category, city, minPrice, maxPrice, search },
         setFilter,
         resetFilters,
-    } = useProductFilterStore();
+    } = useProductFilters();
 
     const sortOptions = [
         { value: "newest", label: "Newest" },
