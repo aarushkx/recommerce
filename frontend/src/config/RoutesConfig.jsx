@@ -16,6 +16,7 @@ import {
     SalesPage,
     UserPublicProfilePage,
     BookingActionPage,
+    AdminPage,
 } from "../pages";
 
 export const routes = [
@@ -106,5 +107,11 @@ export const routes = [
         path: "/booking/action/:bookingId",
         element: <BookingActionPage />,
         protected: true,
+    },
+    {
+        path: "/admin/",
+        element: <AdminPage />,
+        protected: true,
+        adminOnly: true,
     },
 ];

@@ -4,7 +4,12 @@ const MainLayout = ({ children }) => {
     return (
         <div>
             <Header />
-            <main className="pt-16 px-6">{children}</main>
+            <main
+                style={{ paddingTop: "var(--header-height, 64px)" }}
+                className="px-6"
+            >
+                {children}
+            </main>
         </div>
     );
 };
