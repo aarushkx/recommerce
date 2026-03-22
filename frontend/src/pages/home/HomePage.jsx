@@ -1,14 +1,18 @@
+import { useLocation } from "react-router-dom";
 import { useProducts } from "../../hooks";
 import useProductFilters from "../../hooks/useProductFilters";
 import ProductCard from "../../components/product/ProductCard";
 import { Loader2, ChevronRight, ChevronLeft } from "lucide-react";
 
 const HomePage = () => {
+    const location = useLocation();
     const { data, isLoading } = useProducts();
     const { filters, setPage } = useProductFilters();
 
     const products = data?.products;
     const pagination = data?.pagination;
+
+    const isAdmin = location.pathname.startsWith("/admin");
 
     return (
         <div className="min-h-screen p-6 space-y-8">
@@ -23,7 +27,11 @@ const HomePage = () => {
                     {/* Product Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {products?.map((product) => (
-                            <ProductCard key={product._id} product={product} />
+                            <ProductCard
+                                key={product._id}
+                                product={product}
+                                isAdmin={isAdmin}
+                            />
                         ))}
                     </div>
 

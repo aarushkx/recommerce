@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { MapPin, User, ArrowUpRight } from "lucide-react";
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, isAdmin }) => {
     const navigate = useNavigate();
 
     const { title, price, condition, location, images, seller } = product;
@@ -72,7 +72,7 @@ const ProductCard = ({ product }) => {
                         onClick={() => navigate(`/products/${product._id}`)}
                         className="btn btn-primary btn-sm btn-block"
                     >
-                        View Product
+                        {isAdmin ? "Manage Product" : "View Product"}
                     </button>
                 </div>
             </div>

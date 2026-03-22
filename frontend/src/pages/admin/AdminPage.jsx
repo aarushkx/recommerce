@@ -1,9 +1,7 @@
+import { HomePage } from "../index";
+
 const AdminPage = () => {
-    return (
-        <div>
-            <h1>Admin Page</h1>
-        </div>
-    );
+    return <HomePage />;
 };
 
 export default AdminPage;
