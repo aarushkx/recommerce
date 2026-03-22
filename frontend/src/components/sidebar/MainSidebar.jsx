@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import {
     User,
     LogOut,
@@ -12,7 +13,10 @@ import {
 } from "lucide-react";
 
 const MainSidebar = ({ user, onNavigate, onLogout }) => {
-    const menuItems = [
+    const location = useLocation();
+    const isAdminPage = location.pathname.startsWith("/admin");
+
+    const userMenuItems = [
         {
             label: "Profile",
             icon: <UserCircle className="h-5 w-5" />,
@@ -60,6 +64,37 @@ const MainSidebar = ({ user, onNavigate, onLogout }) => {
             className: "text-error mt-4 border-t border-base-200 pt-4",
         },
     ];
+
+    const adminMenuItems = [
+        {
+            label: "Profile",
+            icon: <UserCircle className="h-5 w-5" />,
+            onClick: () => onNavigate("/profile"),
+        },
+        {
+            label: "Account",
+            icon: <User className="h-5 w-5" />,
+            onClick: () => onNavigate("/account"),
+        },
+        {
+            label: "Feedback",
+            icon: <MessageSquareText className="h-5 w-5" />,
+            onClick: () => onNavigate("/feedback"),
+        },
+        {
+            label: "Settings",
+            icon: <Settings className="h-5 w-5" />,
+            onClick: () => onNavigate("/settings"),
+        },
+        {
+            label: "Logout",
+            icon: <LogOut className="h-5 w-5" />,
+            onClick: onLogout,
+            className: "text-error mt-4 border-t border-base-200 pt-4",
+        },
+    ];
+
+    const menuItems = isAdminPage ? adminMenuItems : userMenuItems;
 
     return (
         <div className="drawer-side z-50">

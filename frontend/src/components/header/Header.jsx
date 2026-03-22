@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useAuth } from "../../hooks";
 import Logo from "./Logo";
 import LocationBox from "./LocationBox";
 import SearchBar from "./SearchBar";
@@ -7,10 +8,16 @@ import FavoritesButton from "./FavoritesButton";
 import UserButton from "./UserButton";
 import AdminBanner from "../admin/AdminBanner";
 import { Search, X } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const Header = () => {
+    const { data: user } = useAuth();
+    const location = useLocation();
     const headerRef = useRef(null);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+    const isAdmin = user?.role === "admin";
+    const isAdminPage = location.pathname.startsWith("/admin");
 
     useEffect(() => {
         const updateHeight = () => {
@@ -57,9 +64,15 @@ const Header = () => {
                         {/* Left Section */}
                         <div className="flex items-center gap-4">
                             <Logo />
-                            <div className="hidden md:block">
-                                <LocationBox />
-                            </div>
+                            {isAdmin ? (
+                                <span className="badge badge-primary badge-sm">
+                                    Admin
+                                </span>
+                            ) : (
+                                <div className="hidden md:block">
+                                    <LocationBox />
+                                </div>
+                            )}
                         </div>
 
                         {/* Center Section (Desktop) */}
@@ -80,7 +93,7 @@ const Header = () => {
                                 <Search size={20} />
                             </button>
 
-                            <FavoritesButton />
+                            {!isAdminPage && <FavoritesButton />}
                             <UserButton />
                         </div>
                     </>

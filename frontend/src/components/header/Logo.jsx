@@ -1,11 +1,17 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Logo = () => {
+    const location = useLocation();
     const navigate = useNavigate();
+
+    const isAdminPage = location.pathname.startsWith("/admin");
 
     return (
         <div
-            onClick={() => navigate("/home")}
+            onClick={() => {
+                const route = isAdminPage ? "/admin" : "/home";
+                navigate(route);
+            }}
             className="flex cursor-pointer select-none items-center"
         >
             {/* Mobile */}
