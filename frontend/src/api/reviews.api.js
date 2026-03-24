@@ -1,7 +1,11 @@
 import { api } from "./axios";
 
-export const postReview = async (sellerId, formData) => {
-    const { data } = await api.post(`/reviews/${sellerId}`, formData);
+export const postReview = async ({ sellerId, formData }) => {
+    const { data } = await api.post(`/reviews/${sellerId}`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
     return data;
 };
 

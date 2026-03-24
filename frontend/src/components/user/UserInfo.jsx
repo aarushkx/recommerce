@@ -18,7 +18,8 @@ const InfoRow = ({ icon: Icon, label, value }) => {
 const UserInfo = ({ user }) => {
     if (!user) return null;
 
-    const rating = user.rating || 0; // fallback
+    const rating = user.rating || 0; // Fallback
+    const normalizedRating = Math.round(rating * 2) / 2; // Ensure rating is in 0.5 increments
 
     return (
         <div className="flex-1 w-full max-w-md space-y-6">
@@ -42,18 +43,29 @@ const UserInfo = ({ user }) => {
             <div className="flex flex-col gap-2">
                 <span className="text-sm text-base-content/60">Rating</span>
 
-                <div className="rating rating-sm">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                        <input
-                            key={star}
-                            type="radio"
-                            name="user-rating"
-                            className="mask mask-star-2 bg-orange-400"
-                            aria-label={`${star} star`}
-                            checked={rating === star}
-                            readOnly
-                        />
-                    ))}
+                <div className="rating rating-sm rating-half">
+                    <input
+                        type="radio"
+                        name="user-rating"
+                        className="rating-hidden"
+                    />
+
+                    {[...Array(10)].map((_, i) => {
+                        const value = (i + 1) * 0.5;
+                        return (
+                            <input
+                                key={value}
+                                type="radio"
+                                name="user-rating"
+                                className={`mask mask-star-2 ${
+                                    i % 2 === 0 ? "mask-half-1" : "mask-half-2"
+                                } bg-orange-400`}
+                                aria-label={`${value} star`}
+                                checked={normalizedRating === value}
+                                readOnly
+                            />
+                        );
+                    })}
                 </div>
             </div>
         </div>

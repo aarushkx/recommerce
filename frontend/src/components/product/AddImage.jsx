@@ -1,20 +1,41 @@
 import { Trash2, Plus } from "lucide-react";
 
-const AddImage = ({ images, setImages }) => {
+const AddImage = ({ images, setImages, maxImages = 5 }) => {
+    const isSingle = maxImages === 1;
+
     const handleFileChange = (e) => {
         if (!e.target.files) return;
 
-        const newFiles = [];
-        Array.from(e.target.files).forEach((file) => {
-            newFiles.push({
+        const files = Array.from(e.target.files);
+
+        // If single mode, we only take the first file and replace the current state
+        if (isSingle) {
+            const file = files[0];
+            if (file) {
+                // Revoke old preview if exists to save memory
+                if (images.length > 0) URL.revokeObjectURL(images[0].preview);
+
+                setImages([
+                    {
+                        id: crypto.randomUUID(),
+                        file,
+                        preview: URL.createObjectURL(file),
+                    },
+                ]);
+            }
+        } else {
+            // Multiple mode logic
+            const availableSlots = maxImages - images.length;
+            const newFiles = files.slice(0, availableSlots).map((file) => ({
                 id: crypto.randomUUID(),
                 file,
                 preview: URL.createObjectURL(file),
-            });
-        });
+            }));
 
-        setImages((prev) => [...prev, ...newFiles]);
-        e.target.value = null;
+            setImages((prev) => [...prev, ...newFiles]);
+        }
+
+        e.target.value = null; // Reset input
     };
 
     const removeImage = (id) => {
@@ -27,23 +48,25 @@ const AddImage = ({ images, setImages }) => {
 
     return (
         <div className="flex flex-wrap gap-4 items-start">
-            {/* Add Photo */}
-            <label className="w-32 h-32 border-2 border-dashed border-base-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-base-200 transition shrink-0">
-                <Plus className="w-6 h-6 text-base-content/40" />
-                <span className="text-xs text-base-content/40 mt-1">
-                    Add Photo
-                </span>
+            {/* Show Add button only if we haven't reached the limit */}
+            {images.length < maxImages && (
+                <label className="w-32 h-32 border-2 border-dashed border-base-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-base-200 transition shrink-0">
+                    <Plus className="w-6 h-6 text-base-content/40" />
+                    <span className="text-xs text-base-content/40 mt-1">
+                        {isSingle ? "Upload Photo" : "Add Photos"}
+                    </span>
 
-                <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleFileChange}
-                />
-            </label>
+                    <input
+                        type="file"
+                        multiple={!isSingle}
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleFileChange}
+                    />
+                </label>
+            )}
 
-            {/* Uploaded images */}
+            {/* Preview list */}
             {images.map((img) => (
                 <div key={img.id} className="relative group w-32 h-32">
                     <img
@@ -51,7 +74,6 @@ const AddImage = ({ images, setImages }) => {
                         alt="preview"
                         className="w-full h-full object-cover rounded-lg border border-base-300"
                     />
-
                     <button
                         type="button"
                         onClick={() => removeImage(img.id)}

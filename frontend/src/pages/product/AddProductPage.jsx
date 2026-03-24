@@ -348,7 +348,11 @@ const AddProductPage = () => {
                     <h2 className="text-xs uppercase tracking-widest text-primary font-bold mb-4">
                         Product Gallery
                     </h2>
-                    <AddImage images={images} setImages={setImages} />
+                    <AddImage
+                        images={images}
+                        setImages={setImages}
+                        maxImages={5}
+                    />
                     <p className="mt-4 text-xs text-base-content/50">
                         Add clear, high-quality images. The first image is your
                         thumbnail.

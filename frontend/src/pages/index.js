@@ -14,6 +14,7 @@ import UserBookingsPage from "./user/UserBookingsPage";
 import OrdersPage from "./commerce/OrdersPage";
 import SalesPage from "./commerce/SalesPage";
 import UserPublicProfilePage from "./profile/UserPublicProfilePage";
+import AddReviewPage from "./review/AddReviewPage";
 import BookingActionPage from "./commerce/BookingActionPage";
 import AdminPage from "./admin/AdminPage";
 
@@ -34,6 +35,7 @@ export {
     OrdersPage,
     SalesPage,
     UserPublicProfilePage,
+    AddReviewPage,
     BookingActionPage,
     AdminPage,
 };

@@ -30,7 +30,9 @@ const BookingCard = ({ booking }) => {
                     className="flex-1"
                     onClick={() => navigate(`/products/${product._id}`)}
                 >
-                    <p className="font-bold cursor-pointer">{product?.title}</p>
+                    <p className="font-bold cursor-pointer hover:underline">
+                        {product?.title}
+                    </p>
 
                     <div className="flex items-center gap-2 text-sm text-base-content/60">
                         ₹{product?.price}
@@ -41,8 +43,8 @@ const BookingCard = ({ booking }) => {
             <div className="flex items-center gap-2 text-sm text-base-content/70">
                 <User className="w-4 h-4 text-primary" />
                 <p
-                    className="cursor-pointer"
-                    onClick={() => navigate(`/seller/${seller._id}`)}
+                    className="text-base-content cursor-pointer hover:underline"
+                    onClick={() => navigate(`/user/${seller._id}`)}
                 >
                     {seller?.name}
                 </p>

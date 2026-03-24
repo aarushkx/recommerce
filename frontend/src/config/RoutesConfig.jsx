@@ -15,6 +15,7 @@ import {
     OrdersPage,
     SalesPage,
     UserPublicProfilePage,
+    AddReviewPage,
     BookingActionPage,
     AdminPage,
 } from "../pages";
@@ -101,6 +102,11 @@ export const routes = [
     {
         path: "/user/:userId",
         element: <UserPublicProfilePage />,
+        protected: true,
+    },
+    {
+        path: "/review/:sellerId",
+        element: <AddReviewPage />,
         protected: true,
     },
     {

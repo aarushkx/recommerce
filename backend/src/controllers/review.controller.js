@@ -111,7 +111,7 @@ export const postReview = async (req, res) => {
         // Re-calculate seller's average rating
         const result = await Review.aggregate([
             {
-                $match: { seller: sellerId },
+                $match: { seller: new mongoose.Types.ObjectId(sellerId) },
             },
             {
                 $group: {

@@ -13,11 +13,13 @@ const UserPublicProfilePage = () => {
 
     const navigate = useNavigate();
     const { data: currentUser } = useAuth();
+
     useEffect(() => {
         if (currentUser && currentUser._id === userId) {
             navigate("/profile"); // redirect to own profile
         }
     }, [currentUser, userId, navigate]);
+
     const { data: user, isLoading } = useUser(userId);
 
     if (isLoading) {
